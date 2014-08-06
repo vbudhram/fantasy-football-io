@@ -2,6 +2,8 @@
  * Created by vijay.budhram on 7/11/14.
  */
 
+"use strict";
+
 var HOST = process.env.HOST || 'localhost';
 var PORT = process.env.PORT || 8080;
 var APP_NAME = 'fantasy-football-io';
@@ -21,7 +23,7 @@ server.route({
         res({
             version: '0.0.1',
             name: APP_NAME
-        })
+        });
     }
 });
 
@@ -30,18 +32,22 @@ server.route({
     path: '/espn',
     config: {
         handler: espnHandler.getTeams
-//        validation: {
-//            payload: {
-//                username: Joi.string().required(),
-//                password: Joi.string().required()
-//            }
-//        }
     }
 });
 
-server.pack.register(Good, function (err) {
+var options = {
+    subscribers: {
+        'console': ['ops', 'request', 'log', 'error']
+    }
+};
+
+server.pack.register({
+    plugin: require('good'),
+    options: options
+}, function (err) {
     if (err) {
-        throw err;
+        console.log(err);
+        return;
     }
 });
 

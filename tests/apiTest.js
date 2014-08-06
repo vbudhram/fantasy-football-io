@@ -7,7 +7,7 @@ var should = require('should');
 var request = supertest('localhost:8080');
 var app = require('../app');
 
-describe('ESPN Test', function () {
+describe('Fantasy Football IO API Test', function () {
     /*
      {
      username: username,
