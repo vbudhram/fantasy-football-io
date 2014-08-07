@@ -65,6 +65,9 @@
 
         console.log('Getting team for link = ' + teamURL);
 
+        var request = require('request');
+        var cheerio = require('cheerio');
+
         // Get team page and extract name, record, and players
         var teamPageOptions = {
             url: teamURL,
@@ -77,11 +80,23 @@
                 getTeamQ.reject(err);
             } else {
                 // Extract team info
-                //var $ = cheerio(body.body);
-                var team = new Team('asdf', '123');
+                var $ = cheerio.load(body);
+                var link = $('a');
 
-                console.log('Resolving team data for ' + teamURL);
-                getTeamQ.resolve("stuff");
+                var nameTokens = $('h3').filter('.team-name');
+                if (nameTokens.length < 1) {
+                    getTeamQ.reject(new Error('Unsupported team url : ' + teamURL));
+
+                } else {
+                    var teamName = nameTokens[0].children[0].data.trim();
+                    var shortName = nameTokens[0].children[1].children[0].data;
+                    shortName = (shortName ? shortName : '').replace('(', '').replace(')', '');
+                    var record = $('.games-univ-mod4')[0].children[0].children[1].data.trim();
+                    var rank = $('.games-univ-mod4')[0].children[0].children[2].children[0].data.replace('(', '').replace(')', '');
+                    var team = new Team(teamName, shortName, record, rank);
+                    console.log('Resolving team data for ' + teamURL);
+                    getTeamQ.resolve(team);
+                }
             }
         });
 
@@ -105,34 +120,23 @@
 
                 var promises = [];
 
-//                for (var teamLink in teamLinks) {
-//                    if (teamLinks.hasOwnProperty(teamLink)) {
-//                        if (teamLinks[teamLink].attribs.href !== undefined && teamLinks[teamLink].attribs.href.indexOf('teamId') > -1) {
-//                            promises.push(getTeam(teamLinks[teamLink].attribs.href, data.cookieJar).timeout(1000,'Timeout for link ' + teamLinks[teamLink]));
-//                        }
-//                    }
-//                }
-                var keys = Object.keys(teamLinks);
-                keys.forEach(function (key) {
-                    var teamLink = teamLinks[key];
+                for (var i = 0; i < teamLinks.length; i++) {
+                    var teamLink = teamLinks[i];
                     if (teamLink.attribs.href !== undefined && teamLink.attribs.href.indexOf('teamId') > -1) {
                         promises.push(getTeam(teamLink.attribs.href, data.cookieJar));
                     }
-                    console.log('Looping');
-                });
+                }
 
-                q.all(promises).then(function (results) {
+                q.allSettled(promises).done(function (results) {
                     var teams = [];
-                    results.forEach(function (result) {
-                        if (result.state === "fulfilled") {
+                    results.forEach(function(result){
+                        if(result.state === 'fulfilled'){
                             teams.push(result.value);
-                        } else {
-                            console.log('Did not push team information because of reason : ' + result.reason);
+                        }else{
+                            console.log(result.reason.message);
                         }
                     });
                     resultQ.resolve(teams);
-                }, function (err) {
-                    resultQ.reject(err);
                 });
 
             }, function (err) {
