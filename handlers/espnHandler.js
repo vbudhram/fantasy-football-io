@@ -28,7 +28,12 @@
                 password = request.payload.password;
             }
 
-            reply(ESPN.getTeams(username, password));
+            ESPN.getTeams(username, password).then(function(result){
+                reply(result);
+            }, function(err){
+                reply(err);
+            });
+
         }
     };
 }());

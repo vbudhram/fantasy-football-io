@@ -11,7 +11,7 @@ describe('ESPN Test', function () {
         var username = credentials.username;
         var password = credentials.password;
         ESPN.getTeams(username, password).then(function(data){
-            console.log(data);
+            console.log(JSON.stringify(data));
             done();
         }, function(err){
             done(err);

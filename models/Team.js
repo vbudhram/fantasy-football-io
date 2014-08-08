@@ -4,11 +4,13 @@
 
 'use strict';
 
-function Team(name, shortName, record, rank) {
+function Team(name, shortName, record, rank, url, players) {
+    this.url = url;
     this.name = name;
     this.record = record;
     this.shortName = shortName;
     this.rank = rank;
+    this.players = players;
 }
 
 module.exports = Team;

@@ -10,6 +10,7 @@
     var cheerio = require('cheerio');
     var request = require('request');
     var Team = require('../models/Team');
+    var Player = require('../models/Player');
     var LOGIN_URL = 'https://r.espn.go.com/members/util/loginUser';
     var FRONTPAGE_URL = 'http://games.espn.go.com/frontpage/';
 
@@ -79,22 +80,43 @@
             if (err) {
                 getTeamQ.reject(err);
             } else {
-                // Extract team info
                 var $ = cheerio.load(body);
-                var link = $('a');
 
                 var nameTokens = $('h3').filter('.team-name');
                 if (nameTokens.length < 1) {
                     getTeamQ.reject(new Error('Unsupported team url : ' + teamURL));
-
                 } else {
+                    // Scrape team player information
+                    var players = [];
+                    var playerCells = $('.pncPlayerRow');
+                    for(var i =0;i<playerCells.length; i++) {
+                        var cell = playerCells[i];
+
+                        // Don't add empty players
+                        if(cell.children[1].children[0].children === undefined){
+                            continue;
+                        }
+                        var playerName = cell.children[1].children[0].children[0].data;
+
+                        var position = cell.children[0].children[0].data;
+                        var playerTeamName = cell.children[1].children[1].data.replace(',',"").trim();
+                        var positionRank = cell.children[3].children[0].data;
+                        var totalPoints = cell.children[4].children[0].data;
+                        var averagePoints = cell.children[5].children[0].data;
+
+                        players.push(new Player(playerName, playerTeamName, position, positionRank, totalPoints, averagePoints));
+                    }
+
+                    // Scrape team information
                     var teamName = nameTokens[0].children[0].data.trim();
                     var shortName = nameTokens[0].children[1].children[0].data;
                     shortName = (shortName ? shortName : '').replace('(', '').replace(')', '');
                     var record = $('.games-univ-mod4')[0].children[0].children[1].data.trim();
                     var rank = $('.games-univ-mod4')[0].children[0].children[2].children[0].data.replace('(', '').replace(')', '');
-                    var team = new Team(teamName, shortName, record, rank);
+
                     console.log('Resolving team data for ' + teamURL);
+                    var team = new Team(teamName, shortName, record, rank, teamURL, players);
+
                     getTeamQ.resolve(team);
                 }
             }
@@ -113,13 +135,10 @@
 
                 // Load html from fantasy football screen to extract team names
                 var $ = cheerio.load(data.body);
-                //var teamLinks = $('.clubhouse-link').attr('href');
-                //teamLinks = (teamLinks instanceof Array) ? teamLinks : [teamLinks];
 
                 var teamLinks = $('a').filter('.clubhouse-link');
 
                 var promises = [];
-
                 for (var i = 0; i < teamLinks.length; i++) {
                     var teamLink = teamLinks[i];
                     if (teamLink.attribs.href !== undefined && teamLink.attribs.href.indexOf('teamId') > -1) {
@@ -129,10 +148,10 @@
 
                 q.allSettled(promises).done(function (results) {
                     var teams = [];
-                    results.forEach(function(result){
-                        if(result.state === 'fulfilled'){
+                    results.forEach(function (result) {
+                        if (result.state === 'fulfilled') {
                             teams.push(result.value);
-                        }else{
+                        } else {
                             console.log(result.reason.message);
                         }
                     });
