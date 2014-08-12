@@ -11,9 +11,11 @@ var APP_NAME = 'fantasy-football-io';
 var Hapi = require('hapi');
 var Good = require('good');
 var Joi = require('joi');
-var espnHandler = require('./handlers/espnHandler');
 
 var server = new Hapi.Server(HOST, PORT);
+
+var espnHandler = require('./handlers/espnHandler')(server);
+
 var Types = Hapi.Types;
 
 server.route({
@@ -37,7 +39,8 @@ server.route({
 
 var options = {
     subscribers: {
-        'console': ['ops', 'request', 'log', 'error']
+        'console': ['ops', 'request', 'log', 'error'],
+        'logs/': ['request', 'log']
     }
 };
 

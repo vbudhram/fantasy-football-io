@@ -7,33 +7,30 @@
 (function () {
     'use strict';
 
-    var ESPN = require('../utils/espnUtils');
+    module.exports = function(server){
+        var ESPN = require('../utils/espnUtils')(server);
+        return {
+            /**
+             * Return all teams associated with the espn account specified. Check params or body for username.
+             *
+             * @param request
+             * @param reply
+             */
+            getTeams: function (request, reply) {
+                var username;
+                var password;
 
-    module.exports = {
-        /**
-         * Return all teams associated with the espn account specified. Check params or body for username.
-         *
-         * @param request
-         * @param reply
-         */
-        getTeams: function (request, reply) {
-            var username;
-            var password;
+                if(request.payload.username && request.payload.password) {
+                    username = request.payload.username;
+                    password = request.payload.password;
+                }
 
-            if(request.params.username && request.params.password){
-                username = request.params.username;
-                password = request.params.password;
-            }else if(request.payload.username && request.payload.password) {
-                username = request.payload.username;
-                password = request.payload.password;
+                ESPN.getTeams(username, password).then(function(result){
+                    reply(result);
+                }, function(err){
+                    reply(err);
+                });
             }
-
-            ESPN.getTeams(username, password).then(function(result){
-                reply(result);
-            }, function(err){
-                reply(err);
-            });
-
-        }
+        };
     };
 }());

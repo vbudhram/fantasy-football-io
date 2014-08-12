@@ -61,17 +61,17 @@
         return resultQ.promise;
     }
 
-    function getTeam(teamURL, cookieJar) {
+    function getTeam(teamUrl, cookieJar) {
         var getTeamQ = q.defer();
 
-        console.log('Getting team for link = ' + teamURL);
+        console.log('Getting team for link = ' + teamUrl);
 
         var request = require('request');
         var cheerio = require('cheerio');
 
         // Get team page and extract name, record, and players
         var teamPageOptions = {
-            url: teamURL,
+            url: teamUrl,
             method: 'GET',
             jar: cookieJar,
             followAllRedirects: true
@@ -84,7 +84,7 @@
 
                 var nameTokens = $('h3').filter('.team-name');
                 if (nameTokens.length < 1) {
-                    getTeamQ.reject(new Error('Unsupported team url : ' + teamURL));
+                    getTeamQ.reject(new Error('Unsupported team url : ' + teamUrl));
                 } else {
                     // Scrape team player information
                     var players = [];
@@ -113,9 +113,10 @@
                     shortName = (shortName ? shortName : '').replace('(', '').replace(')', '');
                     var record = $('.games-univ-mod4')[0].children[0].children[1].data.trim();
                     var rank = $('.games-univ-mod4')[0].children[0].children[2].children[0].data.replace('(', '').replace(')', '');
+                    var teamImageUrl = $('#content > div:nth-child(1) > div.gamesmain.container > div > div > div:nth-child(3) > div.games-topcol.games-topcol-expand > div.games-univ-mod1 > a > img')[0].attribs.src;
 
-                    console.log('Resolving team data for ' + teamURL);
-                    var team = new Team(teamName, shortName, record, rank, teamURL, players);
+                    console.log('Resolving team data for ' + teamUrl);
+                    var team = new Team(teamName, shortName, record, rank, teamUrl, teamImageUrl, players);
 
                     getTeamQ.resolve(team);
                 }
