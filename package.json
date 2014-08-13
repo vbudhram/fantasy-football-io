@@ -32,7 +32,8 @@
     "passport": "^0.2.0",
     "passport-local": "^1.0.0",
     "q": "^1.0.1",
-    "request": "^2.39.0"
+    "request": "^2.39.0",
+    "superagent": "^0.18.2"
   },
   "devDependencies": {
     "should": "^4.0.4",

@@ -44,6 +44,7 @@ app.use(flash());
 var authRouter = new express.Router();
 
 authRouter.post('/login', function (req, res, next) {
+    console.log('Logging in with user');
     passport.authenticate('local', function (err, user, info) {
         if (err) {
             return next(err);
@@ -61,20 +62,10 @@ authRouter.post('/login', function (req, res, next) {
     })(req, res, next);
 });
 
-authRouter.use(function (req, res, next) {
-    // Check for user session
-    if(req.session.passport.user){
-        next();
-    }else{
-        res.send(403);
-    }
-});
 
 app.use(authRouter);
 
 var apiRouter = new express.Router();
-
-apiRouter.use(authRouter); // Apply auth rules
 
 apiRouter.route('/about')
     .all(function (req, res) {
@@ -83,19 +74,6 @@ apiRouter.route('/about')
             name: APP_NAME
         });
     });
-
-apiRouter.route('/espn')
-    .post(function (req, res) {
-        var username = req.body.username;
-        var password = req.body.password;
-
-        espnUtils.getTeams(username, password).then(function (teams) {
-            res.json(teams);
-        }, function (err) {
-            res.send(400, err);
-        });
-    });
-
 
 apiRouter.route('/users')
     .post(function (req, res) {
@@ -116,16 +94,45 @@ apiRouter.route('/users')
         }, function (err) {
             res.send(400, err);
         });
-    })
-    .get(function (req, res) {
-        var email = req.body.email;
+    });
 
-        db.User.find({'email': email}).exec(function (err, result) {
-            if (err) {
-                res.send(400, err);
-            } else {
-                res.json(result[0]);
+function auth(req, res, next) {
+    // Check for user session
+    if (req.session.passport.user) {
+        next();
+    } else {
+        res.send(403);
+    }
+}
+
+apiRouter.use('/espn', auth); // Apply auth rules
+
+// Add espn team to logged in user
+apiRouter.route('/espn')
+    .post(function (req, res) {
+        var username = req.body.username;
+        var password = req.body.password;
+
+        espnUtils.getTeams(username, password).then(function (teams) {
+
+            // Add team to user
+            // TODO Perform validation on teams
+            if (req.user[0]) {
+                db.User.find({'email': req.user[0].email}).exec(function (err, results) {
+                    var user = results[0];
+                    user.teams = user.teams.concat(teams);
+                    user.save(function (err, result) {
+                        if (err) {
+                            res.send(400, err);
+                        } else {
+                            res.json(user);
+                        }
+                    });
+                });
             }
+
+        }, function (err) {
+            res.send(400, err);
         });
     });
 

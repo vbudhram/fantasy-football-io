@@ -14,9 +14,37 @@ module.exports = function (connectionUrl) {
         }
     });
 
+    var Player = new mongoose.Schema({
+        playerName: {type: String},
+        playerTeamName: {type: String},
+        positionRank: {type: Number},
+        totalPoints: {type: Number},
+        averagePoints: {type: Number}
+    });
+
+    var Team = new mongoose.Schema({
+        name: {type: String},
+        shortName: {type: String},
+        record: {type: String},
+        rank: {type: String},
+        teamImageUrl: {type: String},
+        teamUrl: {type: String},
+        players: [Player]
+    });
+
+    var User = new mongoose.Schema({
+        email: {type: String, trim: true, index: true, unique: true},
+        passwordHash: String,
+        teams: [Team]
+    });
+
     return {
-        User: require('./schemas/User')(mongoose),
-        Team: require('./schemas/Team')(mongoose),
-        Player: require('./schemas/Player')(mongoose)
+        User: mongoose.model('Users', User)
     };
+
+//    return {
+//        User: require('./schemas/User')(mongoose),
+//        Team: require('./schemas/Team')(mongoose),
+//        Player: require('./schemas/Player')(mongoose)
+//    };
 };
