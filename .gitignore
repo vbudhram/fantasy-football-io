@@ -26,3 +26,5 @@ node_modules
 
 # Intelij
 .idea
+
+*.env

@@ -6,7 +6,7 @@ var supertest = require('supertest');
 var superagent = require('superagent');
 var should = require('should');
 var request = supertest('localhost:8080');
-var app = require('../expressApp');
+var app = require('../app');
 
 var espnCredentials = require('../../fantasyCredentials.json');
 

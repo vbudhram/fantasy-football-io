@@ -1,42 +1,43 @@
 {
-  "name": "fantasy-football-io",
-  "version": "0.0.0",
-  "description": "fantasy-football-io ===================",
-  "main": "app.js",
-  "directories": {
-    "test": "tests"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/vbudhram/fantasy-football-io.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/vbudhram/fantasy-football-io/issues"
-  },
-  "homepage": "https://github.com/vbudhram/fantasy-football-io",
-  "dependencies": {
-    "cheerio": "^0.17.0",
-    "connect-flash": "^0.1.1",
-    "cookie-session": "^1.0.2",
-    "express": "^4.8.2",
-    "express-session": "^1.7.5",
-    "good": "^2.2.0",
-    "hapi": "^6.4.0",
-    "joi": "^4.6.2",
-    "morgan": "^1.2.2",
-    "passport": "^0.2.0",
-    "passport-local": "^1.0.0",
-    "q": "^1.0.1",
-    "request": "^2.39.0",
-    "superagent": "^0.18.2"
-  },
-  "devDependencies": {
-    "should": "^4.0.4",
-    "supertest": "^0.13.0"
-  }
+    "name": "fantasy-football-io",
+    "version": "0.0.0",
+    "description": "fantasy-football-io ===================",
+    "main": "app.js",
+    "directories": {
+        "test": "tests"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/vbudhram/fantasy-football-io.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/vbudhram/fantasy-football-io/issues"
+    },
+    "homepage": "https://github.com/vbudhram/fantasy-football-io",
+    "dependencies": {
+        "cheerio": "^0.17.0",
+        "connect-flash": "^0.1.1",
+        "cookie-session": "^1.0.2",
+        "express": "^4.8.2",
+        "express-session": "^1.7.5",
+        "good": "^2.2.0",
+        "hapi": "^6.4.0",
+        "joi": "^4.6.2",
+        "morgan": "^1.2.2",
+        "passport": "^0.2.0",
+        "passport-local": "^1.0.0",
+        "q": "^1.0.1",
+        "request": "^2.39.0",
+        "superagent": "^0.18.2"
+    },
+    "devDependencies": {
+        "should": "^4.0.4",
+        "supertest": "^0.13.0"
+    }
 }
