@@ -93,6 +93,20 @@ describe('Fantasy Football IO API Test', function () {
 //        });
     });
 
+    describe.only('News API', function () {
+        it('should get current headlines', function (done) {
+            request.get('/news')
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        done(err);
+                    } else {
+                        done();
+                    }
+                });
+        });
+    });
+
     describe('Team API', function () {
         it('should reject add espn team information for unauthorized users', function (done) {
             request.post('/espn')
@@ -117,9 +131,9 @@ describe('Fantasy Football IO API Test', function () {
                     .send(validUserInfo)
                     .expect(200)
                     .end(function (err, res) {
-                        if(err){
+                        if (err) {
                             done(err);
-                        }else{
+                        } else {
                             done();
                         }
                     });

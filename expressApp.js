@@ -26,6 +26,7 @@ var passport = require('./auth/LocalStrategy')(db);
 
 // Utils
 var espnUtils = require('./utils/espnUtils');
+var newsUtils = require('./utils/newsUtils');
 var bcrypt = require('bcrypt');
 var validationRules = require('./utils/validationUtils');
 
@@ -96,6 +97,14 @@ apiRouter.route('/users')
         });
     });
 
+apiRouter.route('/news')
+    .get(function (req, res) {
+        db.NewsArticle.find(req.query).exec(function (err, articles) {
+            res.json(articles);
+        });
+    });
+
+// Apply auth rules
 function auth(req, res, next) {
     // Check for user session
     if (req.session.passport.user) {
@@ -105,7 +114,7 @@ function auth(req, res, next) {
     }
 }
 
-apiRouter.use('/espn', auth); // Apply auth rules
+apiRouter.use('/espn', auth);
 
 // Add espn team to logged in user
 apiRouter.route('/espn')
@@ -114,7 +123,6 @@ apiRouter.route('/espn')
         var password = req.body.password;
 
         espnUtils.getTeams(username, password).then(function (teams) {
-
             // Add team to user
             // TODO Perform validation on teams
             if (req.user[0]) {
@@ -141,3 +149,31 @@ app.use(apiRouter);
 app.listen(PORT, function () {
     console.log('Server started on ' + PORT);
 });
+
+// TODO find a better solution for doing timers
+function updateNews() {
+    // Timer to download the latest news articles
+    newsUtils.currentHeadlines().then(function (articles) {
+        console.log('Updated news articles');
+        articles.forEach(function (article) {
+            var newsArticle = new db.NewsArticle({
+                title: article.title,
+                url: article.url,
+                date: article.date,
+                source: article.source
+            });
+
+            newsArticle.save(function (err, result) {
+                if (!err) {
+                    console.log('Saved article : ' + result);
+                }
+            });
+        });
+
+        setTimeout(updateNews, 60000);
+    }, function (err) {
+        console.log('Updated news articles');
+        setTimeout(updateNews, 60000);
+    });
+}
+setTimeout(updateNews, 1000);

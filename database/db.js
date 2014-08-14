@@ -14,6 +14,16 @@ module.exports = function (connectionUrl) {
         }
     });
 
+    var NewsArticle = new mongoose.Schema({
+        title: {type: String},
+        author: {type: String},
+        url: {type: String, trim: true, unique: true},
+        mediaUrl: {type: String},
+        metatags: {type: Array},
+        date: {type: Date},
+        source: {type: String, index: true}
+    });
+
     var Player = new mongoose.Schema({
         playerName: {type: String},
         playerTeamName: {type: String},
@@ -39,7 +49,8 @@ module.exports = function (connectionUrl) {
     });
 
     return {
-        User: mongoose.model('Users', User)
+        User: mongoose.model('Users', User),
+        NewsArticle: mongoose.model('NewsArticle', NewsArticle)
     };
 
 //    return {

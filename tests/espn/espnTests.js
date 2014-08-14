@@ -10,10 +10,19 @@ describe('ESPN Test', function () {
     it('should retrieve leagues and teams of user', function (done) {
         var username = credentials.username;
         var password = credentials.password;
-        ESPN.getTeams(username, password).then(function(data){
+        ESPN.getTeams(username, password).then(function (data) {
             console.log(JSON.stringify(data));
             done();
-        }, function(err){
+        }, function (err) {
+            done(err);
+        });
+    });
+
+    it('should retrieve headlines from espn football frontpage', function (done) {
+        ESPN.getHeadlines().then(function (data) {
+            console.log(JSON.stringify(data));
+            done();
+        }, function (err) {
             done(err);
         });
     });

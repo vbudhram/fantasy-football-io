@@ -89,17 +89,17 @@
                     // Scrape team player information
                     var players = [];
                     var playerCells = $('.pncPlayerRow');
-                    for(var i =0;i<playerCells.length; i++) {
+                    for (var i = 0; i < playerCells.length; i++) {
                         var cell = playerCells[i];
 
                         // Don't add empty players
-                        if(cell.children[1].children[0].children === undefined){
+                        if (cell.children[1].children[0].children === undefined) {
                             continue;
                         }
                         var playerName = cell.children[1].children[0].children[0].data;
 
                         var position = cell.children[0].children[0].data;
-                        var playerTeamName = cell.children[1].children[1].data.replace(',',"").trim();
+                        var playerTeamName = cell.children[1].children[1].data.replace(',', "").trim();
                         var positionRank = cell.children[3].children[0].data;
                         var totalPoints = cell.children[4].children[0].data;
                         var averagePoints = cell.children[5].children[0].data;
@@ -126,7 +126,49 @@
         return getTeamQ.promise;
     }
 
+    function getHeadlines() {
+        var getNewsQ = q.defer();
+
+        console.log('Getting headlines at url : ' + FRONTPAGE_URL);
+
+        var cheerio = require('cheerio');
+
+        var newsOptions = {
+            url: FRONTPAGE_URL,
+            method: 'GET',
+            followAllRedirects: true
+        };
+        request(newsOptions, function (err, res, body) {
+            if (err) {
+                getNewsQ.reject(err);
+            } else {
+                var $ = cheerio.load(body);
+
+                var newsArticles = [];
+
+                var links = $('a');
+                for (var i = 0; i < links.length; i++) {
+                    var link = links[i];
+                    // Check to see if this is a news article
+                    if (link.attribs.href && link.attribs.href.indexOf('/fantasy/football/story') > -1) {
+                        newsArticles.push({
+                            title: link.children[0].data,
+                            url: link.attribs.href,
+                            date: new Date(),
+                            source: 'ESPN Football'
+                        });
+                    }
+                }
+
+                getNewsQ.resolve(newsArticles);
+            }
+        });
+
+        return getNewsQ.promise;
+    }
+
     module.exports = {
+        getHeadlines: getHeadlines,
         getTeams: function (username, password) {
             var resultQ = q.defer();
 
@@ -162,7 +204,6 @@
             }, function (err) {
                 resultQ.reject(err);
             });
-
 
             return resultQ.promise;
         }
