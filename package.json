@@ -30,6 +30,7 @@
     "express": "^4.8.2",
     "express-session": "^1.7.5",
     "good": "^2.2.0",
+    "gulp": "^3.8.7",
     "hapi": "^6.4.0",
     "joi": "^4.6.2",
     "mongoose": "^3.8.14",
@@ -42,6 +43,11 @@
   },
   "devDependencies": {
     "should": "^4.0.4",
-    "supertest": "^0.13.0"
+    "supertest": "^0.13.0",
+    "bower": "^1.3.9",
+    "gulp": "~3.8.0",
+    "gulp-less": "~1.3.3",
+    "gulp-usemin": "^0.3.7",
+    "gulp-wrap": "^0.3.0"
   }
 }

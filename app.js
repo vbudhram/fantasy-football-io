@@ -9,6 +9,7 @@ var HOST = process.env.HOST || 'localhost';
 var PORT = process.env.PORT || 8080;
 var APP_NAME = 'fantasy-football-io';
 var DB_URL = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'localhost:27017/fantasy-football';
+var env = process.env.NODE_ENV || 'development';
 
 // Required middleware
 var express = require('express');
@@ -40,6 +41,12 @@ app.use(session({secret: 'keyboard cat'}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+
+if (env === 'development') {
+    app.use(express.static(__dirname + '/web'));
+} else if (env === 'production') {
+    app.use(express.static(__dirname + '/dist'));
+}
 
 // Route endpoints
 var authRouter = new express.Router();
