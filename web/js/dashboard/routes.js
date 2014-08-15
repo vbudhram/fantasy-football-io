@@ -13,10 +13,10 @@ angular.module('Dashboard').config(['$stateProvider', '$urlRouterProvider',
     $stateProvider
         .state('index', {
             url: '/',
-            templateUrl: 'dashboard.html'
+            templateUrl: 'news.html'
         })
         .state('tables', {
-            url: '/tables', 
+            url: '/tables',
             templateUrl: 'tables.html'
         });
 }]);

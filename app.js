@@ -106,7 +106,7 @@ apiRouter.route('/users')
 
 apiRouter.route('/news')
     .get(function (req, res) {
-        db.NewsArticle.find(req.query).exec(function (err, articles) {
+        db.NewsArticle.find(req.query).sort({date: -1}).exec(function (err, articles) {
             res.json(articles);
         });
     });
