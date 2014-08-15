@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "postinstall": "./node_modules/bower/bin/bower install"
+    "postinstall": "./node_modules/bower/bin/bower install &&  node ./node_modules/gulp/bin/gulp.js"
   },
   "repository": {
     "type": "git",
@@ -33,7 +33,6 @@
     "express-session": "^1.7.5",
     "good": "^2.2.0",
     "gulp": "^3.8.7",
-    "hapi": "^6.4.0",
     "joi": "^4.6.2",
     "mongoose": "^3.8.14",
     "morgan": "^1.2.2",
