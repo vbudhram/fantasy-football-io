@@ -93,10 +93,52 @@
         return getNewsQ.promise;
     }
 
+    function cbssportsHeadlines() {
+        var newsUrl = 'http://fantasynews.cbssports.com/fantasyfootball/columns/';
+        var getNewsQ = q.defer();
+
+        console.log('Getting headlines at url : ' + newsUrl);
+
+        var cheerio = require('cheerio');
+
+        var newsOptions = {
+            url: newsUrl,
+            method: 'GET',
+            followAllRedirects: true
+        };
+        request(newsOptions, function (err, res, body) {
+            if (err) {
+                getNewsQ.reject(err);
+            } else {
+                var $ = cheerio.load(body);
+
+                var newsArticles = [];
+
+                var links = $('strong a');
+                for (var i = 0; i < links.length; i++) {
+                    var link = links[i];
+                    // Check to see if this is a news article
+                    if (link.attribs.href && link.attribs.href.indexOf('//fantasynews.cbssports.com/fantasyfootball/story/') > -1) {
+                        newsArticles.push({
+                            title: link.children[0].data,
+                            url: link.attribs.href,
+                            date: new Date(),
+                            source: 'CBS Sports Football'
+                        });
+                    }
+                }
+
+                getNewsQ.resolve(newsArticles);
+            }
+        });
+
+        return getNewsQ.promise;
+    }
+
     function currentHeadLines(){
         var defer = q.defer();
 
-        q.allSettled([rotoworldHeadlines(), yahooHeadlines(), espnUtils.getHeadlines()]).done(function (results) {
+        q.allSettled([rotoworldHeadlines(), yahooHeadlines(), espnUtils.getHeadlines(), cbssportsHeadlines()]).done(function (results) {
             var news = [];
             results.forEach(function (result) {
                 if (result.state === 'fulfilled') {

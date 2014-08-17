@@ -36,6 +36,10 @@ app.controller('NewsCtrl', ['$scope', '$http', function ($scope, $http) {
             {
                 return 'https://lh3.googleusercontent.com/-TDqduPW0yDU/AAAAAAAAAAI/AAAAAAAAACE/hqiP8xPLdVg/s120-c/photo.jpg';
             }
+            case 'CBS Sports Football':
+            {
+                return 'https://pbs.twimg.com/profile_images/469871112155717632/AkhCJbjZ_400x400.png';
+            }
             default:
             {
                 return '';

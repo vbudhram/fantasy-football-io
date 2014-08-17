@@ -163,21 +163,7 @@
 
                             <tr ng-repeat="article in articles">
                                 <td class="text-center vmiddle">
-                                            <!--<img height="30px" src="https://lh3.googleusercontent.com/-REC9hG2lrlY/AAAAAAAAAAI/AAAAAAAAFaw/d9En7QdXlTA/s120-c/photo.jpg"/>-->
-                                            <img height="30px" ng-src="{{getImageSrc(article)}}"/>
-
-                                    <!--<div ng-if="article.source === 'Yahoo Football'">-->
-                                        <!--<img height="30px"-->
-                                             <!--src="https://lh3.googleusercontent.com/-REC9hG2lrlY/AAAAAAAAAAI/AAAAAAAAFaw/d9En7QdXlTA/s120-c/photo.jpg"/>-->
-                                    <!--</div>-->
-                                    <!--<div ng-if="article.source === 'ESPN Football'">-->
-                                        <!--<img height="30px"-->
-                                             <!--src="https://lh4.googleusercontent.com/-yOoKXdob9y8/AAAAAAAAAAI/AAAAAAACB5c/Dd157Do4vBs/s120-c/photo.jpg"/>-->
-                                    <!--</div>-->
-                                    <!--<div ng-if="article.source === 'Rotoworld Football'">-->
-                                        <!--<img height="30px"-->
-                                             <!--src="https://lh3.googleusercontent.com/-TDqduPW0yDU/AAAAAAAAAAI/AAAAAAAAACE/hqiP8xPLdVg/s120-c/photo.jpg"/>-->
-                                    <!--</div>-->
+                                    <img height="30px" ng-src="{{getImageSrc(article)}}"/>
                                 </td>
                                 <td>
                                     <div>
@@ -186,24 +172,6 @@
                                     <div>{{article.date | date : 'short'}}</div>
                                 </td>
                             </tr>
-                            <!--<tr>-->
-                            <!--<td class="text-center">1</td>-->
-                            <!--<td>Joe Bloggs</td>-->
-                            <!--<td>Super Admin</td>-->
-                            <!--<td>AZ23045</td>-->
-                            <!--</tr>-->
-                            <!--<tr>-->
-                            <!--<td class="text-center">2</td>-->
-                            <!--<td>Timothy Hernandez</td>-->
-                            <!--<td>Admin</td>-->
-                            <!--<td>AU24783</td>-->
-                            <!--</tr>-->
-                            <!--<tr>-->
-                            <!--<td class="text-center">3</td>-->
-                            <!--<td>Joe Bickham</td>-->
-                            <!--<td>User</td>-->
-                            <!--<td>AM23781</td>-->
-                            <!--</tr>-->
                             </tbody>
                         </table>
                     </div>
