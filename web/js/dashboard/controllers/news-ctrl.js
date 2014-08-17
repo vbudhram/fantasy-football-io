@@ -21,4 +21,25 @@ app.controller('NewsCtrl', ['$scope', '$http', function ($scope, $http) {
         { type: 'success', msg: 'Thanks for visiting! Feel free to create pull requests to improve the dashboard!' },
         { type: 'danger', msg: 'Found a bug? Create an issue with as many details as you can.' }
     ];
+
+    $scope.getImageSrc = function (article) {
+        switch (article.source) {
+            case 'ESPN Football':
+            {
+                return 'https://lh4.googleusercontent.com/-yOoKXdob9y8/AAAAAAAAAAI/AAAAAAACB5c/Dd157Do4vBs/s120-c/photo.jpg';
+            }
+            case 'Yahoo Football':
+            {
+                return 'https://lh3.googleusercontent.com/-REC9hG2lrlY/AAAAAAAAAAI/AAAAAAAAFaw/d9En7QdXlTA/s120-c/photo.jpg';
+            }
+            case 'Rotoworld Football':
+            {
+                return 'https://lh3.googleusercontent.com/-TDqduPW0yDU/AAAAAAAAAAI/AAAAAAAAACE/hqiP8xPLdVg/s120-c/photo.jpg';
+            }
+            default:
+            {
+                return '';
+            }
+        }
+    };
 }]);
