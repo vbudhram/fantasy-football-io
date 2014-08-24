@@ -135,10 +135,55 @@
         return getNewsQ.promise;
     }
 
+    function usaTodayFFHeadlines() {
+        var newsUrl = 'http://fantasy.usatoday.com/analysis/sport_tag/nfl';
+        var getNewsQ = q.defer();
+
+        console.log('Getting headlines at url : ' + newsUrl);
+
+        var cheerio = require('cheerio');
+
+        var newsOptions = {
+            url: newsUrl,
+            method: 'GET',
+            followAllRedirects: true
+        };
+        request(newsOptions, function (err, res, body) {
+            if (err) {
+                getNewsQ.reject(err);
+            } else {
+                var $ = cheerio.load(body);
+
+                var newsArticles = [];
+
+                var links = $('.img-holder');
+                for (var i = 0; i < links.length; i++) {
+                    var link = links[i];
+
+                    // USA articles have 5 childern divs
+                    if(link.children.length === 5){
+                        var mediaUrl = link.attribs.style.replace("background-image:url('", '').replace("?w=480');", '');
+                        newsArticles.push({
+                            title: link.attribs.title,
+                            url: link.attribs.href,
+                            date: new Date(),
+                            source: 'USA Today Football',
+                            mediaUrl : mediaUrl
+                        });
+                    }
+                }
+
+                getNewsQ.resolve(newsArticles);
+            }
+        });
+
+        return getNewsQ.promise;
+    }
+
     function currentHeadLines(){
         var defer = q.defer();
 
-        q.allSettled([rotoworldHeadlines(), yahooHeadlines(), espnUtils.getHeadlines(), cbssportsHeadlines()]).done(function (results) {
+        q.allSettled([rotoworldHeadlines(), yahooHeadlines(), espnUtils.getHeadlines(), cbssportsHeadlines(), usaTodayFFHeadlines()]).done(function (results) {
             var news = [];
             results.forEach(function (result) {
                 if (result.state === 'fulfilled') {

@@ -152,7 +152,6 @@
                 <div class="widget-title">
                     <i class="fa fa-users"></i> Articles
                     <input type="text" placeholder="Search" class="form-control input-sm pull-right" ng-model="search"/>
-
                     <div class="clearfix"></div>
                 </div>
                 <div class="widget-body no-padding">
@@ -180,7 +179,7 @@
                                 </td>
                                 <td>
                                     <div>
-                                        <a href="{{article.url}}" target="_blank">{{article.title}}</a>
+                                        <a analytics-on="click" analytics-category="Articles" href="{{article.url}}" target="_blank">{{article.title}}</a>
                                     </div>
                                     <div>{{article.date | date : 'short'}}</div>
                                 </td>

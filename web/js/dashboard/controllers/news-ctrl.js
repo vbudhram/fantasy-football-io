@@ -33,6 +33,10 @@ app.controller('NewsCtrl', ['$scope', '$http', function ($scope, $http) {
             {
                 return 'https://pbs.twimg.com/profile_images/469871112155717632/AkhCJbjZ_400x400.png';
             }
+            case 'USA Today Football':
+            {
+                return 'https://lh5.googleusercontent.com/-ZaYfYmjUUjA/AAAAAAAAAAI/AAAAAAAAIQs/Ydunp8tRLrg/s120-c/photo.jpg';
+            }
             default:
             {
                 return '';
