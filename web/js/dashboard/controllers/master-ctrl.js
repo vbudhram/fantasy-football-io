@@ -1,10 +1,11 @@
 /**
  * Master Controller
  */
-angular.module('Dashboard')
-    .controller('MasterCtrl', ['$scope', '$cookieStore', MasterCtrl]);
 
-function MasterCtrl($scope, $cookieStore) {
+'use strict';
+var app = angular.module('Dashboard');
+
+app.controller('MasterCtrl', ['$scope', '$cookieStore', function ($scope, $cookieStore){
     /**
      * Sidebar Toggle & Cookie Control
      *
@@ -22,13 +23,13 @@ function MasterCtrl($scope, $cookieStore) {
                 if($cookieStore.get('toggle') == false)
                 {
                     $scope.toggle = false;
-                }            
+                }
                 else
                 {
                     $scope.toggle = true;
                 }
             }
-            else 
+            else
             {
                 $scope.toggle = true;
             }
@@ -40,7 +41,7 @@ function MasterCtrl($scope, $cookieStore) {
 
     });
 
-    $scope.toggleSidebar = function() 
+    $scope.toggleSidebar = function()
     {
         $scope.toggle = ! $scope.toggle;
 
@@ -48,4 +49,4 @@ function MasterCtrl($scope, $cookieStore) {
     };
 
     window.onresize = function() { $scope.$apply(); };
-}
+}]);

@@ -58,7 +58,7 @@ gulp.task('compile-less', function(){
  */
 gulp.task('watch-less', function() {
   gulp.watch(paths.watch_path, ['compile-less']);
-})
+});
 
 gulp.task('build', ['usemin', 'copy-assets']);
 gulp.task('default', ['build']);
