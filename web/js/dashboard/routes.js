@@ -18,5 +18,9 @@ angular.module('Dashboard').config(['$stateProvider', '$urlRouterProvider',
         .state('tables', {
             url: '/tables',
             templateUrl: 'tables.html'
+        })
+        .state('login', {
+            url: '/login',
+            templateUrl: 'login.html'
         });
 }]);
