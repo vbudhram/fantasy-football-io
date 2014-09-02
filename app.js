@@ -18,7 +18,7 @@ var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
 var session = require('express-session');
 var flash = require('connect-flash');
-var ejs = require('ejs');
+//var ejs = require('ejs');
 
 // Database and models import
 var db = require('./database/db')(DB_URL);
@@ -42,9 +42,9 @@ app.use(session({secret: 'keyboard cat'}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.set('views', __dirname + '/web');
-app.set('view engine', 'ejs');
-app.engine('html', require('ejs').renderFile);
+//app.set('views', __dirname + '/web');
+//app.set('view engine', 'ejs');
+//app.engine('html', require('ejs').renderFile);
 
 if (env === 'development') {
     app.use(express.static(__dirname + '/web'));
@@ -72,8 +72,8 @@ authRouter.post('/doLogin', function (req, res, next) {
             }
 //            var currentUser = user;
 //            delete currentUser.passwordHash;
-//            return res.send(200, user[0]);
-            return res.render('index.html', {user: user});
+            return res.send(200, user[0]);
+//            return res.render('index.html', {user: user});
         });
     })(req, res, next);
 });
