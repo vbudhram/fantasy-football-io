@@ -65,15 +65,13 @@ authRouter.post('/doLogin', function (req, res, next) {
             req.session.messages = [info.message];
             return res.send(400, info.message);
         }
-//        user = user[0];
+
         req.logIn(user, function (err) {
             if (err) {
                 return next(err);
             }
-//            var currentUser = user;
-//            delete currentUser.passwordHash;
+
             return res.send(200, user[0]);
-//            return res.render('index.html', {user: user});
         });
     })(req, res, next);
 });
