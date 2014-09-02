@@ -1,0 +1,42 @@
+<div class="row" ng-controller="NewsCtrl">
+    <div class="col-lg-12">
+        <div class="widget">
+            <div class="widget-title">
+                <i class="fa fa-users"></i> Articles
+                <input type="text" placeholder="Search" class="form-control input-sm pull-right" ng-model="search"/>
+
+                <div class="clearfix"></div>
+            </div>
+            <div class="widget-body no-padding">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="text-center">Source</th>
+                            <th>Title</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr ng-repeat="article in articles | filter : search">
+                            <td class="text-center vmiddle">
+                                <img height="50px" ng-src="{{getImageSrc(article)}}"/>
+                            </td>
+                            <td>
+                                <div class="vmiddle mediaImage">
+                                    <img ng-if="article.mediaUrl" height="50px" src="{{article.mediaUrl}}"/>
+                                </div>
+
+                                <div class="vmiddle mediaImage">
+                                    <a analytics-on="click" analytics-category="Articles" href="{{article.url}}"
+                                       target="_blank">{{article.title}}</a>
+                                    <h6>{{article.date | date : 'short'}}</h6>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

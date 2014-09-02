@@ -93,7 +93,19 @@ describe('Fantasy Football IO API Test', function () {
 //        });
     });
 
-    describe.only('News API', function () {
+    describe('News API', function () {
+        it('should update current headlines', function (done) {
+            request.put('/news')
+                .expect(204)
+                .end(function (err, res) {
+                    if (err) {
+                        done(err);
+                    } else {
+                        done();
+                    }
+                });
+        });
+
         it('should get current headlines', function (done) {
             request.get('/news')
                 .expect(200)
@@ -101,6 +113,7 @@ describe('Fantasy Football IO API Test', function () {
                     if (err) {
                         done(err);
                     } else {
+                        res.body.length.should.be.greaterThan(0);
                         done();
                     }
                 });
@@ -127,7 +140,7 @@ describe('Fantasy Football IO API Test', function () {
                     password: 'password'
                 };
 
-                agent.post('/login')
+                agent.post('/doLogin')
                     .send(validUserInfo)
                     .expect(200)
                     .end(function (err, res) {

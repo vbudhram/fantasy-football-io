@@ -156,20 +156,30 @@
 
                 var newsArticles = [];
 
-                var links = $('.img-holder');
+                var links = $('.img-holder a');
                 for (var i = 0; i < links.length; i++) {
                     var link = links[i];
 
                     // USA articles have 5 childern divs
-                    if(link.children.length === 5){
-                        var mediaUrl = link.attribs.style.replace("background-image:url('", '').replace("?w=480');", '');
-                        newsArticles.push({
+                    if (link.children.length === 5) {
+                        var mediaUrl = undefined;
+                        if (link.attribs.style) {
+                            mediaUrl = link.attribs.style.replace(' ', '').replace("background-image:url('", '');
+                            mediaUrl = mediaUrl.substring(0, mediaUrl.indexOf('.jpg') + 4);
+                        }
+
+                        var article = {
                             title: link.attribs.title,
                             url: link.attribs.href,
                             date: new Date(),
-                            source: 'USA Today Football',
-                            mediaUrl : mediaUrl
-                        });
+                            source: 'USA Today Football'
+                        };
+
+                        if (mediaUrl) {
+                            article.mediaUrl = mediaUrl;
+                        }
+
+                        newsArticles.push(article);
                     }
                 }
 
@@ -180,7 +190,7 @@
         return getNewsQ.promise;
     }
 
-    function currentHeadLines(){
+    function currentHeadLines() {
         var defer = q.defer();
 
         q.allSettled([rotoworldHeadlines(), yahooHeadlines(), espnUtils.getHeadlines(), cbssportsHeadlines(), usaTodayFFHeadlines()]).done(function (results) {

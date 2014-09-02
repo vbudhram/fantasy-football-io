@@ -18,6 +18,7 @@ var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
 var session = require('express-session');
 var flash = require('connect-flash');
+var ejs = require('ejs');
 
 // Database and models import
 var db = require('./database/db')(DB_URL);
@@ -41,6 +42,9 @@ app.use(session({secret: 'keyboard cat'}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.set('views', __dirname + '/web');
+app.set('view engine', 'ejs');
+app.engine('html', require('ejs').renderFile);
 
 if (env === 'development') {
     app.use(express.static(__dirname + '/web'));
@@ -51,7 +55,7 @@ if (env === 'development') {
 // Route endpoints
 var authRouter = new express.Router();
 
-authRouter.post('/login', function (req, res, next) {
+authRouter.post('/doLogin', function (req, res, next) {
     console.log('Logging in with user');
     passport.authenticate('local', function (err, user, info) {
         if (err) {
@@ -61,11 +65,15 @@ authRouter.post('/login', function (req, res, next) {
             req.session.messages = [info.message];
             return res.send(400, info.message);
         }
+//        user = user[0];
         req.logIn(user, function (err) {
             if (err) {
                 return next(err);
             }
-            return res.send(200);
+//            var currentUser = user;
+//            delete currentUser.passwordHash;
+//            return res.send(200, user[0]);
+            return res.render('index.html', {user: user});
         });
     })(req, res, next);
 });
@@ -108,6 +116,22 @@ apiRouter.route('/news')
     .get(function (req, res) {
         db.NewsArticle.find(req.query).sort({date: -1}).exec(function (err, articles) {
             res.json(articles);
+        });
+    })
+    .put(function(req, res){
+        newsUtils.currentHeadlines().then(function (articles) {
+            articles.forEach(function (article) {
+                var newsArticle = new db.NewsArticle(article);
+                newsArticle.save(function (err, result) {
+                    if (!err) {
+                        console.log('Saved article : ' + result);
+                    }
+                });
+            });
+
+            res.send(204);
+        }, function (err) {
+            res.send(400, err);
         });
     });
 
@@ -163,12 +187,7 @@ function updateNews() {
     newsUtils.currentHeadlines().then(function (articles) {
         console.log('Updated news articles');
         articles.forEach(function (article) {
-            var newsArticle = new db.NewsArticle({
-                title: article.title,
-                url: article.url,
-                date: article.date,
-                source: article.source
-            });
+            var newsArticle = new db.NewsArticle(article);
 
             newsArticle.save(function (err, result) {
                 if (!err) {

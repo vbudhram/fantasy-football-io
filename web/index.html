@@ -14,6 +14,10 @@
     <link rel="stylesheet" type="text/css" href="bower_components/font-awesome/css/font-awesome.css">
     <!-- endbuild -->
 
+    <!-- build:css lib/angular-loading-bar/css/angular-loading-bar.css -->
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-loading-bar/build/loading-bar.css">
+    <!-- endbuild -->
+
     <!-- build:less css/dashboard/dashboard.css -->
     <link rel="stylesheet" type="text/css" href="less/dashboard/main.less">
     <link rel="stylesheet" type="text/css" href="less/dashboard/loading.less">
@@ -22,8 +26,9 @@
     <link rel="stylesheet" type="text/css" href="less/dashboard/sidebar.less">
     <link rel="stylesheet" type="text/css" href="less/dashboard/widgets.less">
     <link rel="stylesheet" type="text/css" href="less/dashboard/hamburg.less">
-    <link rel="stylesheet" type="text/css" href="less/dashboard/spinner.less">
     <link rel="stylesheet" type="text/css" href="less/dashboard/news.less">
+    <link rel="stylesheet" type="text/css" href="less/dashboard/login.less">
+    <link rel="stylesheet" type="text/css" href="less/dashboard/loading-bar.less">
     <!-- endbuild -->
 
     <link rel="stylesheet" type="text/css" href="less/dashboard/main.css">
@@ -33,8 +38,9 @@
     <link rel="stylesheet" type="text/css" href="less/dashboard/sidebar.css">
     <link rel="stylesheet" type="text/css" href="less/dashboard/widgets.css">
     <link rel="stylesheet" type="text/css" href="less/dashboard/hamburg.css">
-    <link rel="stylesheet" type="text/css" href="less/dashboard/spinner.css">
     <link rel="stylesheet" type="text/css" href="less/dashboard/news.css">
+    <link rel="stylesheet" type="text/css" href="less/dashboard/login.css">
+    <link rel="stylesheet" type="text/css" href="less/dashboard/loading-bar.css">
 
     <!-- SCRIPTS -->
     <!-- build:js lib/angular/angular.js -->
@@ -52,15 +58,28 @@
     <!-- build:js lib/angular-ui-router/angular-ui-router.js -->
     <script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <!-- endbuild -->
+    <!-- build:js lib/angular-loading-bar/angular-loading-bar.js -->
+    <script type="text/javascript" src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
+    <!-- endbuild -->
+    <!-- build:js lib/angular-animate/angular-animate.js -->
+    <script type="text/javascript" src="bower_components/angular-animate/angular-animate.js"></script>
+    <!-- endbuild -->
     <!-- build:js lib/google-angulartics.js -->
     <script type="text/javascript" src="bower_components/angulartics/dist/angulartics.min.js"></script>
     <script type="text/javascript" src="bower_components/angulartics/dist/angulartics-ga.min.js"></script>
     <!-- endbuild -->
     <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
         ga('create', 'UA-43107610-2', { 'cookieDomain': 'none' });
     </script>
 
@@ -69,7 +88,9 @@
     <script type="text/javascript" src="js/dashboard/routes.js"></script>
     <script type="text/javascript" src="js/dashboard/controllers/master-ctrl.js"></script>
     <script type="text/javascript" src="js/dashboard/controllers/news-ctrl.js"></script>
+    <!--<script type="text/javascript" src="js/dashboard/controllers/user-ctrl.js"></script>-->
     <script type="text/javascript" src="js/dashboard/directives/loading.js"></script>
+    <script type="text/javascript" src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
     <!-- endbuild -->
 
 
@@ -123,9 +144,47 @@
         <div class="page-content">
 
             <!-- Header Bar -->
-
             <div class="row header">
                 <div class="col-xs-12">
+                    <div class="user pull-right">
+                        <div ng-if="user" class="item dropdown">
+                            <a href="#" class="dropdown-toggle">
+                                <img src="img/avatar.jpg">
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li class="dropdown-header">
+                                    Joe Bloggs
+                                </li>
+                                <li class="divider"></li>
+                                <li class="link">
+                                    <a href="#">
+                                        Profile
+                                    </a>
+                                </li>
+                                <li class="link">
+                                    <a href="#">
+                                        Menu Item
+                                    </a>
+                                </li>
+                                <li class="link">
+                                    <a href="#">
+                                        Menu Item
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li class="link">
+                                    <a ng-click="logout()">
+                                        Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div ng-if="!user" class="login-controls">
+                            <a href="#/login">Login</a>
+                            /
+                            <a href="#/signup">Signup</a>
+                        </div>
+                    </div>
                     <div class="meta">
                         <div class="page">
                             Fantasy News
@@ -144,105 +203,8 @@
     <!-- End Content Wrapper -->
 </div>
 <!-- End Page Wrapper -->
+<%- JSON.stringify(user) %>
+<div ng-view></div>
 
-<script type="text/ng-template" id="news.html">
-    <div class="row" ng-controller="NewsCtrl">
-        <div class="col-lg-12">
-            <div class="widget">
-                <div class="widget-title">
-                    <i class="fa fa-users"></i> Articles
-                    <input type="text" placeholder="Search" class="form-control input-sm pull-right" ng-model="search"/>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="widget-body no-padding">
-                    <div>
-                        <div class="spinner" ng-if="loading">
-                            <div class="rect1"></div>
-                            <div class="rect2"></div>
-                            <div class="rect3"></div>
-                            <div class="rect4"></div>
-                            <div class="rect5"></div>
-                        </div>
-
-                        <table class="table" ng-if="!loading">
-                            <thead>
-                            <tr>
-                                <th class="text-center">Source</th>
-                                <th>Title</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-                            <tr ng-repeat="article in articles | filter : search">
-                                <td class="text-center vmiddle">
-                                    <img height="30px" ng-src="{{getImageSrc(article)}}"/>
-                                </td>
-                                <td>
-                                    <div>
-                                        <a analytics-on="click" analytics-category="Articles" href="{{article.url}}" target="_blank">{{article.title}}</a>
-                                    </div>
-                                    <div>{{article.date | date : 'short'}}</div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- End Main Content -->
-</script>
-
-<script type="text/ng-template" id="login.html">
-    <div class="container">
-        <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-            <div class="panel panel-info" >
-                <div class="panel-heading">
-                    <div class="panel-title">Sign In</div>
-                    <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Forgot password?</a></div>
-                </div>
-
-                <div style="padding-top:30px" class="panel-body" >
-
-                    <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-
-                    <form id="loginform" class="form-horizontal" role="form">
-
-                        <div style="margin-bottom: 25px" class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input id="login-username" type="text" class="form-control" name="username" value="" placeholder="username or email">
-                        </div>
-
-                        <div style="margin-bottom: 25px" class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="login-password" type="password" class="form-control" name="password" placeholder="password">
-                        </div>
-
-
-
-                        <div class="input-group">
-                            <div class="checkbox">
-                                <label>
-                                    <input id="login-remember" type="checkbox" name="remember" value="1"> Remember me
-                                </label>
-                            </div>
-                        </div>
-
-
-                        <div style="margin-top:10px" class="form-group">
-                            <!-- Button -->
-
-                            <div class="col-sm-12 controls">
-                                <a id="btn-login" href="#" class="btn btn-success">Login  </a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
 </body>
 </html>

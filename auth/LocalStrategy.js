@@ -23,7 +23,8 @@ module.exports = function (db) {
                 if (err) {
                     return done(err);
                 }
-                if (!user) {
+
+                if (user.length === 0) {
                     return done(null, false, { message: 'Incorrect email.' });
                 }
 
@@ -37,8 +38,7 @@ module.exports = function (db) {
                 });
             });
         }
-    ))
-    ;
+    )) ;
 
     return passport;
 };

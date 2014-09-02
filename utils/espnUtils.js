@@ -100,11 +100,17 @@
 
                         var position = cell.children[0].children[0].data;
                         var playerTeamName = cell.children[1].children[1].data.replace(',', "").trim();
-                        var positionRank = cell.children[3].children[0].data;
-                        var totalPoints = cell.children[4].children[0].data;
-                        var averagePoints = cell.children[5].children[0].data;
 
-                        players.push(new Player(playerName, playerTeamName, position, positionRank, totalPoints, averagePoints));
+                        if(teamUrl.indexOf('2014')){
+                            // TODO Figure this out later, not sure how to handle current year, point and rankings
+                            players.push(new Player(playerName, playerTeamName, position, undefined, undefined, undefined));
+                        }else{
+                            // ESPN has different layouts for previous years
+                            var positionRank = cell.children[3].children[0].data;
+                            var totalPoints = cell.children[4].children[0].data;
+                            var averagePoints = cell.children[5].children[0].data;
+                            players.push(new Player(playerName, playerTeamName, position, positionRank, totalPoints, averagePoints));
+                        }
                     }
 
                     // Scrape team information
