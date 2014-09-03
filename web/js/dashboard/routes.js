@@ -13,11 +13,11 @@ angular.module('Dashboard').config(['$stateProvider', '$urlRouterProvider',
     $stateProvider
         .state('index', {
             url: '/',
-            templateUrl: 'views/news.html'
+            templateUrl: 'views/articles.html'
         })
         .state('news', {
             url: '/',
-            templateUrl: 'views/news.html'
+            templateUrl: 'views/articles.html'
         })
         .state('login', {
             url: '/login',
