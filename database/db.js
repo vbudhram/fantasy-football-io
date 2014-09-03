@@ -14,6 +14,7 @@ module.exports = function (connectionUrl) {
         }
     });
 
+    // News Models
     var NewsArticle = new mongoose.Schema({
         title: {type: String},
         author: {type: String},
@@ -24,6 +25,7 @@ module.exports = function (connectionUrl) {
         source: {type: String, index: true}
     });
 
+    // Team Models
     var Player = new mongoose.Schema({
         playerName: {type: String},
         playerTeamName: {type: String},
@@ -42,10 +44,23 @@ module.exports = function (connectionUrl) {
         players: [Player]
     });
 
+    var Sport = new mongoose.Schema({
+        name: {type: String},
+        teams: [Team]
+    });
+
+    var Site = new mongoose.Schema({
+        name: {type: String},
+        siteUrl: {type: String},
+        username: {type: String},
+        password: {type: String},
+        sports: [Sport]
+    });
+
     var User = new mongoose.Schema({
         email: {type: String, trim: true, index: true, unique: true},
         passwordHash: String,
-        teams: [Team]
+        sites: [Site]
     });
 
     return {

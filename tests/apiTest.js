@@ -40,7 +40,7 @@ describe('Fantasy Football IO API Test', function () {
     describe('User API', function (done) {
         it('should add valid user', function (done) {
             var validUserInfo = {
-                email: 'test@asdf.com',
+                email: 'vbudhram@gmail.com',
                 password: 'password'
             };
 
@@ -136,7 +136,7 @@ describe('Fantasy Football IO API Test', function () {
 
             before('should login', function (done) {
                 var validUserInfo = {
-                    email: 'test@asdf.com',
+                    email: 'vbudhram@gmail.com',
                     password: 'password'
                 };
 
@@ -152,9 +152,33 @@ describe('Fantasy Football IO API Test', function () {
                     });
             });
 
-            it('should add espn team information for users', function (done) {
+            it('should add espn user information for users', function (done) {
                 agent.post('/espn')
                     .send(espnCredentials)
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) {
+                            done(err);
+                        } else {
+                            done();
+                        }
+                    });
+            });
+
+            it('should get espn site information', function (done) {
+                agent.get('/espn')
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) {
+                            done(err);
+                        } else {
+                            done();
+                        }
+                    });
+            });
+
+            it('should get espn football information', function (done) {
+                agent.get('/espn/football')
                     .expect(200)
                     .end(function (err, res) {
                         if (err) {

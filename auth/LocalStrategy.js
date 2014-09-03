@@ -4,10 +4,10 @@
 
 'use strict';
 
-module.exports = function (db) {
+module.exports = function (db, key) {
     var passport = require('passport');
     var LocalStrategy = require('passport-local').Strategy;
-    var bcrypt = require('bcrypt');
+    var encryptionUtils = require('../utils/encryptionUtils')(key);
 
     passport.serializeUser(function (user, done) {
         done(null, user);
@@ -28,7 +28,7 @@ module.exports = function (db) {
                     return done(null, false, { message: 'Incorrect email.' });
                 }
 
-                bcrypt.compare(password, user[0].passwordHash, function(err, res) {
+                encryptionUtils.compareHash(password, user[0].passwordHash, function(err, res){
                     if(!res){
                         return done(null, false, { message: 'Incorrect password.' });
 

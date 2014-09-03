@@ -10,6 +10,7 @@ var PORT = process.env.PORT || 8080;
 var APP_NAME = 'fantasy-football-io';
 var DB_URL = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'localhost:27017/fantasy-football';
 var env = process.env.NODE_ENV || 'development';
+var salt = process.env.SALT || 'badSalt';
 
 // Required middleware
 var express = require('express');
@@ -18,7 +19,6 @@ var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
 var session = require('express-session');
 var flash = require('connect-flash');
-//var ejs = require('ejs');
 
 // Database and models import
 var db = require('./database/db')(DB_URL);
@@ -27,9 +27,9 @@ var db = require('./database/db')(DB_URL);
 var passport = require('./auth/LocalStrategy')(db);
 
 // Utils
+var encryptionUtils = require('./utils/encryptionUtils')(salt);
 var espnUtils = require('./utils/espnUtils');
 var newsUtils = require('./utils/newsUtils');
-var bcrypt = require('bcrypt');
 var validationRules = require('./utils/validationUtils');
 
 var app = express();
@@ -42,9 +42,6 @@ app.use(session({secret: 'keyboard cat'}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-//app.set('views', __dirname + '/web');
-//app.set('view engine', 'ejs');
-//app.engine('html', require('ejs').renderFile);
 
 if (env === 'development') {
     app.use(express.static(__dirname + '/web'));
@@ -71,7 +68,12 @@ authRouter.post('/doLogin', function (req, res, next) {
                 return next(err);
             }
 
-            return res.send(200, user[0]);
+            user[0].sites = undefined;
+            var currentUser = {
+                email : user[0].email
+            };
+
+            return res.send(200, currentUser);
         });
     })(req, res, next);
 });
@@ -92,7 +94,7 @@ apiRouter.route('/about')
 apiRouter.route('/users')
     .post(function (req, res) {
         validationRules.validateUser(req.body).then(function () {
-            var passwordHash = bcrypt.hashSync(req.body.password, 8);
+            var passwordHash = encryptionUtils.hash(req.body.password);
             var newUser = new db.User({
                 email: req.body.email,
                 passwordHash: passwordHash
@@ -116,7 +118,7 @@ apiRouter.route('/news')
             res.json(articles);
         });
     })
-    .put(function(req, res){
+    .put(function (req, res) {
         newsUtils.currentHeadlines().then(function (articles) {
             articles.forEach(function (article) {
                 var newsArticle = new db.NewsArticle(article);
@@ -143,33 +145,107 @@ function auth(req, res, next) {
     }
 }
 
-apiRouter.use('/espn', auth);
+apiRouter.use('/:site', auth);
 
 // Add espn team to logged in user
-apiRouter.route('/espn')
+apiRouter.route('/:site')
+    .get(function(req, res){
+        db.User.find({'email': req.user[0].email, 'sites.name' : req.params.site}).exec(function (err, results) {
+            var user = results[0];
+            if (err) {
+                res.send(400, err);
+            } else {
+                if(user){
+                    user.sites.forEach(function(site){
+                        if(site.name === req.params.site){
+                            res.json(site);
+                        }
+                    });
+                }else{
+                    res.send(400, 'Invalid request');
+                }
+
+            }
+        });
+    })
     .post(function (req, res) {
         var username = req.body.username;
         var password = req.body.password;
 
-        espnUtils.getTeams(username, password).then(function (teams) {
-            // Add team to user
-            // TODO Perform validation on teams
-            if (req.user[0]) {
+//        if (req.user[0]) {
+//            res.send(400, 'No user is logged in');
+//        }
+
+        switch (req.params.site) {
+            case 'espn':
+            {
                 db.User.find({'email': req.user[0].email}).exec(function (err, results) {
                     var user = results[0];
-                    user.teams = user.teams.concat(teams);
-                    user.save(function (err, result) {
-                        if (err) {
-                            res.send(400, err);
-                        } else {
-                            res.json(user);
-                        }
+
+                    user.sites = [];
+                    user.sites.push({
+                        name: 'espn',
+                        username: encryptionUtils.encrypt(username),
+                        password: encryptionUtils.encrypt(password),
+                        sports: [
+                            {
+                                name: 'football',
+                                teams: []
+                            }
+                        ]
+                    });
+
+                    espnUtils.getTeams(username, password).then(function (teams) {
+                        user.sites.forEach(function (site) {
+                            if (site.name === 'espn') {
+                                site.sports.forEach(function (sport) {
+                                    if (sport.name === 'football') {
+                                        sport.teams = teams;
+                                    }
+                                });
+                            }
+                        });
+                        user.save(function (err, result) {
+                            if (err) {
+                                res.send(400, err);
+                            } else {
+                                res.json(user);
+                            }
+                        });
                     });
                 });
-            }
 
-        }, function (err) {
-            res.send(400, err);
+            }
+        }
+    });
+
+apiRouter.route('/:site/:sport')
+    .get(function(req, res){
+        db.User.find({'email': req.user[0].email, 'sites.name' : req.params.site}).exec(function (err, results) {
+            var user = results[0];
+            if (err) {
+                res.send(400, err);
+            } else {
+                if(user){
+                    var found = false;
+                    user.sites.forEach(function(site){
+                        if(site.name === req.params.site){
+                            site.sports.forEach(function(sport){
+                               if(sport.name === req.params.sport){
+                                   res.json(sport.teams);
+                                   found = true;
+                               }
+                            });
+                        }
+                    });
+
+                    if(!found){
+                        res.send(200, {});
+                    }
+                }else{
+                    res.send(400, 'No valid user found to complete request');
+                }
+            }
         });
     });
 

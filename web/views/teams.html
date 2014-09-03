@@ -1,0 +1,38 @@
+<div class="row" ng-controller="SiteCtrl">
+
+
+    <div class="col-lg-2" ng-repeat="team in teams">
+        <div class="widget">
+            <div class="widget-title">
+                <div class="clearfix"></div>
+            </div>
+            <div class="widget-body no-padding">
+                <div class="vmiddle">
+                    <img height="100px" width="100px" src="{{team.teamImageUrl}}"/>
+                </div>
+
+                <div class="vmiddle">
+                    <h6>{{team.name}}</h6>
+                </div>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Player</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr ng-repeat="player in team.players">
+                        <td>
+                            {{player.playerName}}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+</div>
