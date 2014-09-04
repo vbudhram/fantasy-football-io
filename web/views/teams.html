@@ -12,20 +12,28 @@
                 </div>
 
                 <div class="vmiddle">
-                    <h6>{{team.name}}</h6>
+                    <h6>{{team.name}} : {{team.active}}</h6>
                 </div>
 
                 <table class="table">
                     <thead>
                     <tr>
+                        <th>Slot</th>
                         <th>Player</th>
+                        <th>Opp.</th>
                     </tr>
                     </thead>
                     <tbody>
 
                     <tr ng-repeat="player in team.players">
                         <td>
+                            {{player.position}}
+                        </td>
+                        <td>
                             {{player.playerName}}
+                        </td>
+                        <td>
+                            {{player.opponent}}
                         </td>
                     </tr>
                     </tbody>

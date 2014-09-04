@@ -27,14 +27,17 @@ module.exports = function (connectionUrl) {
 
     // Team Models
     var Player = new mongoose.Schema({
+        position: {type: String},
         playerName: {type: String},
         playerTeamName: {type: String},
+        opponent: {type: String},
         positionRank: {type: Number},
         totalPoints: {type: Number},
         averagePoints: {type: Number}
     });
 
     var Team = new mongoose.Schema({
+        active: {type: Boolean},
         name: {type: String},
         shortName: {type: String},
         record: {type: String},

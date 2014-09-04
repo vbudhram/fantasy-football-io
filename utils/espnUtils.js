@@ -89,6 +89,7 @@
                     // Scrape team player information
                     var players = [];
                     var playerCells = $('.pncPlayerRow');
+                    var active = false;
                     for (var i = 0; i < playerCells.length; i++) {
                         var cell = playerCells[i];
 
@@ -101,9 +102,19 @@
                         var position = cell.children[0].children[0].data;
                         var playerTeamName = cell.children[1].children[1].data.replace(',', "").trim();
 
-                        if(teamUrl.indexOf('2014')){
+                        if(teamUrl.indexOf('2014') > -1){
                             // TODO Figure this out later, not sure how to handle current year, point and rankings
-                            players.push(new Player(playerName, playerTeamName, position, undefined, undefined, undefined));
+                            var slot = cell.children[0].children[0].data;
+                            var opponent = cell.children[4].children[0].children[0].children[0].data;
+                            var player = {
+                                position: position,
+                                playerName : playerName,
+                                playerTeamName: playerTeamName,
+                                opponent: opponent
+                            };
+
+                            players.push(player);
+                            active = true;
                         }else{
                             // ESPN has different layouts for previous years
                             var positionRank = cell.children[3].children[0].data;
@@ -122,7 +133,17 @@
                     var teamImageUrl = $('#content > div:nth-child(1) > div.gamesmain.container > div > div > div:nth-child(3) > div.games-topcol.games-topcol-expand > div.games-univ-mod1 > a > img')[0].attribs.src;
 
                     console.log('Resolving team data for ' + teamUrl);
-                    var team = new Team(teamName, shortName, record, rank, teamUrl, teamImageUrl, players);
+//                    var team = new Team(teamName, shortName, record, rank, teamUrl, teamImageUrl, players);
+                    var team = {
+                        active: active,
+                        name: teamName,
+                        shortName: shortName,
+                        record: record,
+                        rank: rank,
+                        teamUrl : teamUrl,
+                        teamImageUrl : teamImageUrl,
+                        players : players
+                    };
 
                     getTeamQ.resolve(team);
                 }

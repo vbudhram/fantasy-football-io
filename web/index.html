@@ -84,21 +84,20 @@
     </script>
 
     <!-- build:js js/dashboard.js -->
+    <script type="text/javascript" src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
+    <script type="text/javascript" src="bower_components/angular-md5/angular-md5.js"></script>
     <script type="text/javascript" src="js/dashboard/module.js"></script>
     <script type="text/javascript" src="js/dashboard/routes.js"></script>
     <script type="text/javascript" src="js/dashboard/controllers/master-ctrl.js"></script>
     <script type="text/javascript" src="js/dashboard/controllers/news-ctrl.js"></script>
     <script type="text/javascript" src="js/dashboard/controllers/site-ctrl.js"></script>
     <script type="text/javascript" src="js/dashboard/directives/loading.js"></script>
-    <script type="text/javascript" src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
     <!-- endbuild -->
-
-
 
     <!-- SCRIPTS -->
 
 </head>
-<body ng-controller="MasterCtrl">
+<body ng-controller="MasterCtrl" ng-init="init()">
 <div id="page-wrapper" ng-class="{'active': toggle}" ng-cloak>
 
     <!-- Sidebar -->
@@ -149,26 +148,16 @@
                     <div class="user pull-right">
                         <div ng-if="user" class="item dropdown">
                             <a href="#" class="dropdown-toggle">
-                                <img src="img/avatar.jpg">
+                                <img ng-src="{{avatarUrl}}">
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li class="dropdown-header">
-                                    Joe Bloggs
+                                    {{user.email}}
                                 </li>
                                 <li class="divider"></li>
                                 <li class="link">
                                     <a href="#">
                                         Profile
-                                    </a>
-                                </li>
-                                <li class="link">
-                                    <a href="#">
-                                        Menu Item
-                                    </a>
-                                </li>
-                                <li class="link">
-                                    <a href="#">
-                                        Menu Item
                                     </a>
                                 </li>
                                 <li class="divider"></li>
@@ -180,9 +169,9 @@
                             </ul>
                         </div>
                         <div ng-if="!user" class="login-controls">
-                            <a href="#/login">Login</a>
-                            /
-                            <a href="#/signup">Signup</a>
+                            <a class="btn" href="#/login">Login</a>
+                            <!--/-->
+                            <!--<a href="#/signup">Signup</a>-->
                         </div>
                     </div>
                     <div class="meta">
