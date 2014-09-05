@@ -44,6 +44,7 @@ module.exports = function (connectionUrl) {
         rank: {type: String},
         teamImageUrl: {type: String},
         teamUrl: {type: String},
+        leagueName: {type: String},
         players: [Player]
     });
 

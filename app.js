@@ -70,7 +70,7 @@ authRouter.post('/doLogin', function (req, res, next) {
 
             user[0].sites = undefined;
             var currentUser = {
-                email : user[0].email
+                email: user[0].email
             };
 
             return res.send(200, currentUser);
@@ -147,21 +147,40 @@ function auth(req, res, next) {
 
 apiRouter.use('/:site', auth);
 
-// Add espn team to logged in user
-apiRouter.route('/:site')
-    .get(function(req, res){
-        db.User.find({'email': req.user[0].email, 'sites.name' : req.params.site}).exec(function (err, results) {
+apiRouter.route('/users', auth)
+    .get(function (req, res) {
+        db.User.find({'email': req.user[0].email}).exec(function (err, results) {
             var user = results[0];
             if (err) {
                 res.send(400, err);
             } else {
-                if(user){
-                    user.sites.forEach(function(site){
-                        if(site.name === req.params.site){
+                if (user) {
+                    res.json(user);
+                } else {
+                    res.send(400, 'Invalid request');
+                }
+
+            }
+        }, function (err) {
+            res.send(400, err);
+        });
+    });
+
+// Add espn team to logged in user
+apiRouter.route('/:site')
+    .get(function (req, res) {
+        db.User.find({'email': req.user[0].email, 'sites.name': req.params.site}).exec(function (err, results) {
+            var user = results[0];
+            if (err) {
+                res.send(400, err);
+            } else {
+                if (user) {
+                    user.sites.forEach(function (site) {
+                        if (site.name === req.params.site) {
                             res.json(site);
                         }
                     });
-                }else{
+                } else {
                     res.send(400, 'Invalid request');
                 }
 
@@ -220,29 +239,29 @@ apiRouter.route('/:site')
     });
 
 apiRouter.route('/:site/:sport')
-    .get(function(req, res){
-        db.User.find({'email': req.user[0].email, 'sites.name' : req.params.site}).exec(function (err, results) {
+    .get(function (req, res) {
+        db.User.find({'email': req.user[0].email, 'sites.name': req.params.site}).exec(function (err, results) {
             var user = results[0];
             if (err) {
                 res.send(400, err);
             } else {
-                if(user){
+                if (user) {
                     var found = false;
-                    user.sites.forEach(function(site){
-                        if(site.name === req.params.site){
-                            site.sports.forEach(function(sport){
-                               if(sport.name === req.params.sport){
-                                   res.json(sport.teams);
-                                   found = true;
-                               }
+                    user.sites.forEach(function (site) {
+                        if (site.name === req.params.site) {
+                            site.sports.forEach(function (sport) {
+                                if (sport.name === req.params.sport) {
+                                    res.json(sport.teams);
+                                    found = true;
+                                }
                             });
                         }
                     });
 
-                    if(!found){
+                    if (!found) {
                         res.send(200, {});
                     }
-                }else{
+                } else {
                     res.send(400, 'No valid user found to complete request');
                 }
             }

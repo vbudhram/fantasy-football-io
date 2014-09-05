@@ -91,6 +91,7 @@
     <script type="text/javascript" src="js/dashboard/controllers/master-ctrl.js"></script>
     <script type="text/javascript" src="js/dashboard/controllers/news-ctrl.js"></script>
     <script type="text/javascript" src="js/dashboard/controllers/site-ctrl.js"></script>
+    <script type="text/javascript" src="js/dashboard/controllers/account-ctrl.js"></script>
     <script type="text/javascript" src="js/dashboard/directives/loading.js"></script>
     <!-- endbuild -->
 
@@ -155,9 +156,9 @@
                                     {{user.email}}
                                 </li>
                                 <li class="divider"></li>
-                                <li class="link">
-                                    <a href="#">
-                                        Profile
+                                <li class="link" ng-if="user">
+                                    <a href="#/account">
+                                        Account
                                     </a>
                                 </li>
                                 <li class="divider"></li>
@@ -169,9 +170,9 @@
                             </ul>
                         </div>
                         <div ng-if="!user" class="login-controls">
-                            <a class="btn" href="#/login">Login</a>
-                            <!--/-->
-                            <!--<a href="#/signup">Signup</a>-->
+                            <a href="#/login">Login</a>
+                            /
+                            <a href="#/signup">Signup</a>
                         </div>
                     </div>
                     <div class="meta">

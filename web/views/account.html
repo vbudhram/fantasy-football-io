@@ -1,0 +1,93 @@
+<div class="row" ng-controller="AccountCtrl">
+    <div class="col-lg-12">
+        <div class="widget">
+            <div class="widget-title">
+                <i class="fa fa-users"></i> Sites
+                <a class="fa fa-plus btn btn-sm btn-success pull-right" ng-click="addSite()"></a>
+                <div class="clearfix"></div>
+            </div>
+            <div class="widget-body no-padding">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th class="text-center">Site</th>
+                        <th></th>
+                        <th>Options</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="site in user.sites">
+                        <td class="text-center vmiddle">
+                            <h1>{{site.name}}</h1>
+                        </td>
+                        <td>
+                            <div ng-repeat="sport in site.sports">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Team</th>
+                                        <th>League</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr ng-repeat="team in sport.teams">
+                                        <td>
+                                            <h1>{{team.name}}</h1>
+                                        </td>
+                                        <td>
+                                            <h1>{{team.leagueName}}</h1>
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                        <td class="text-center vmiddle">
+                            <a class="fa fa-minus btn btn-sm btn-danger pull-right"></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Add Site</h3>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div style="margin-bottom: 25px" class="input-group">
+                    <label>Site</label>
+                    <select ng-model="site.name" bs-selectbox>
+                        <option value="1">espn</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 25px" class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                    <input id="site-username" type="text" class="form-control" name="email" ng-model="site.email"
+                           placeholder="Email" required>
+                </div>
+
+                <div style="margin-bottom: 25px" class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                    <input id="site-password" type="password" class="form-control" name="password"
+                           placeholder="Password" ng-model="site.password" required>
+                </div>
+                <div class="message error">
+                    {{site.error}}
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">Add</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+</div>

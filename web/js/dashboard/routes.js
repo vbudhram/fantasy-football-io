@@ -29,6 +29,11 @@ angular.module('Dashboard').config(['$stateProvider', '$urlRouterProvider',
             templateUrl: 'views/teams.html',
             controller: 'SiteCtrl'
         })
+        .state('account', {
+            url: '/account',
+            templateUrl: 'views/account.html',
+            controller: 'AccountCtrl'
+        })
         .state('signup', {
             url: '/signup',
             templateUrl: 'views/signup.html'

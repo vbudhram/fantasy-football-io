@@ -47,8 +47,8 @@ app.controller('MasterCtrl', ['$scope', '$http', '$rootScope', 'cfpLoadingBar', 
     $scope.init = function init() {
         console.log("Initalizing controller");
         $scope.user = $cookieStore.get('user');
-        var imageUrl =
-            $scope.avatarUrl = $scope.user ? ('http://www.gravatar.com/avatar/' + md5.createHash($scope.user.email)) : 'img/avatar.jpg';
+        var imageUrl = $scope.avatarUrl = $scope.user ? ('http://www.gravatar.com/avatar/' + md5.createHash($scope.user.email)) : 'img/avatar.jpg';
+        $scope.signup = undefined;
     };
 
     $scope.login = function login() {
@@ -60,20 +60,13 @@ app.controller('MasterCtrl', ['$scope', '$http', '$rootScope', 'cfpLoadingBar', 
             url: '/doLogin',
             data: {email: $scope.login.email, password: $scope.login.password}
         }).success(function (data, status, headers, config) {
-
             console.log('Completed login request');
 
             $scope.user = $scope.login.email;
-
             $cookieStore.put('user', data);
-
             cfpLoadingBar.complete();
-
-//            $location.path('/news');
             $window.location.href = '#/news';
 
-            $scope.$apply();
-            $scope.$digest();
         }).error(function (data, status, headers, config) {
             console.log(data);
             cfpLoadingBar.complete();
@@ -87,4 +80,39 @@ app.controller('MasterCtrl', ['$scope', '$http', '$rootScope', 'cfpLoadingBar', 
         $cookieStore.remove('user');
         $location.path('/login');
     };
+
+    $scope.signup = function(){
+        console.log('Signing up user');
+
+        if(!validateEmail($scope.signup.email)){
+            $scope.signup.error = 'Please enter a valid email.';
+        }else if($scope.signup.password !== undefined){
+            $scope.signup.error = 'Pltease enter a password.';
+        }else if ($scope.signup.password !== $scope.signup.confirm){
+            $scope.signup.error = 'Passwords do not match.';
+        }else{
+            cfpLoadingBar.start();
+
+            $http({
+                method: 'post',
+                url: '/users',
+                data: {email: $scope.signup.email, password: $scope.signup.password}
+            }).success(function (data, status, headers, config) {
+                $scope.user = $scope.login.email;
+                $cookieStore.put('user', data);
+                cfpLoadingBar.complete();
+                $scope.signup = undefined;
+                $window.location.href = '#/news';
+            }).error(function (data, status, headers, config) {
+                cfpLoadingBar.complete();
+                $scope.signup.error = data;
+            });
+        }
+
+    };
+
+    function validateEmail(email) {
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
 }]);

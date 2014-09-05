@@ -72,25 +72,64 @@ describe('Fantasy Football IO API Test', function () {
                 });
         });
 
-//        it('should get user', function (done) {
-//            var userInfo = {
-//                email: 'testEmail@asdf.com'
-//            };
-//
-//            request.get('/users')
-//                .expect('Content-Type', /json/)
-//                .expect(200)
-//                .send(userInfo)
-//                .end(function (err, res) {
-//                    if (err) {
-//                        done(err);
-//                    } else {
-//                        var result = res.body;
-//                        result.email.should.equal(userInfo.email);
-//                        done();
-//                    }
-//                });
-//        });
+        describe('should get logged in user information', function(){
+            var request = require('supertest');
+            var agent = request.agent('localhost:8080');
+
+            before('should add user', function (done) {
+
+                var validUserInfo = {
+                    email: 'vbudhram2@gmail.com',
+                    password: 'password'
+                };
+
+                agent.post('/users')
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .send(validUserInfo)
+                    .end(function (err, res) {
+                        if (err) {
+                            done(err);
+                        } else {
+                            done();
+                        }
+                    });
+            });
+
+            before('should login', function (done) {
+                var validUserInfo = {
+                    email: 'vbudhram2@gmail.com',
+                    password: 'password'
+                };
+
+                agent.post('/doLogin')
+                    .send(validUserInfo)
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) {
+                            done(err);
+                        } else {
+                            done();
+                        }
+                    });
+            });
+
+            it('should get user', function (done) {
+                agent.get('/users')
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) {
+                            done(err);
+                        } else {
+                            var result = res.body;
+                            result.should.not.be.null;
+                            done();
+                        }
+                    });
+            });
+        });
+
     });
 
     describe('News API', function () {

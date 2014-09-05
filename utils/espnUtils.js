@@ -131,7 +131,7 @@
                     var record = $('.games-univ-mod4')[0].children[0].children[1].data.trim();
                     var rank = $('.games-univ-mod4')[0].children[0].children[2].children[0].data.replace('(', '').replace(')', '');
                     var teamImageUrl = $('#content > div:nth-child(1) > div.gamesmain.container > div > div > div:nth-child(3) > div.games-topcol.games-topcol-expand > div.games-univ-mod1 > a > img')[0].attribs.src;
-
+                    var leagueName = $('#content > div:nth-child(1) > div.gamesmain.container > div > div > div:nth-child(3) > div.games-topcol.games-topcol-expand > div:nth-child(2) > div.games-univ-mod3 > ul:nth-child(2) > li > a > strong')[0].children[0].data;
                     console.log('Resolving team data for ' + teamUrl);
 //                    var team = new Team(teamName, shortName, record, rank, teamUrl, teamImageUrl, players);
                     var team = {
@@ -142,6 +142,7 @@
                         rank: rank,
                         teamUrl : teamUrl,
                         teamImageUrl : teamImageUrl,
+                        leagueName : leagueName,
                         players : players
                     };
 
