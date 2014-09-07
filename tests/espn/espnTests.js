@@ -18,6 +18,17 @@ describe('ESPN Test', function () {
         });
     });
 
+    it('should reject invalid user', function (done) {
+        var username = 'asdf';
+        var password = 'asdd';
+        ESPN.getTeams(username, password).then(function (data) {
+            done();
+        }, function (err) {
+            console.log(err);
+            done();
+        });
+    });
+
     it('should retrieve headlines from espn football frontpage', function (done) {
         ESPN.getHeadlines().then(function (data) {
             console.log(JSON.stringify(data));

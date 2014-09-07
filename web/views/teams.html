@@ -1,11 +1,6 @@
-<div class="row" ng-controller="SiteCtrl">
-
-
-    <div class="col-lg-2 col-md-3 col-sm-4" ng-repeat="team in teams">
+<div ng-controller="SiteCtrl">
+    <div class="col-lg-2 teamPanel" ng-repeat="team in teams">
         <div class="widget">
-            <div class="widget-title">
-                <div class="clearfix"></div>
-            </div>
             <div class="widget-body no-padding">
                 <div class="vmiddle">
                     <img height="100px" width="100px" src="{{team.teamImageUrl}}"/>
@@ -38,9 +33,7 @@
                     </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
+            <!--</div>-->
+        <!--</div>-->
     </div>
-
-
 </div>

@@ -3,7 +3,7 @@
  */
 
 'use strict';
-app.controller('MasterCtrl', ['$scope', '$http', '$rootScope', 'cfpLoadingBar', '$location', '$cookieStore', '$window', 'md5', function ($scope, $http, $rootScope, cfpLoadingBar, $location, $cookieStore, $window, md5) {
+app.controller('MasterCtrl', ['$scope', '$http', '$rootScope', 'cfpLoadingBar', '$location', '$cookieStore', '$window', 'md5', 'UserService', function ($scope, $http, $rootScope, cfpLoadingBar, $location, $cookieStore, $window, md5, UserService) {
     /**
      * Sidebar Toggle & Cookie Control
      *
@@ -36,7 +36,6 @@ app.controller('MasterCtrl', ['$scope', '$http', '$rootScope', 'cfpLoadingBar', 
 
     $scope.toggleSidebar = function () {
         $scope.toggle = !$scope.toggle;
-
         $cookieStore.put('toggle', $scope.toggle);
     };
 

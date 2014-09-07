@@ -217,6 +217,11 @@
                     }
                 }
 
+                // If no teams were found, don't add to account
+                if(promises.length < 1) {
+                    resultQ.reject(new Error('No teams found in this account.'));
+                }
+
                 q.allSettled(promises).done(function (results) {
                     var teams = [];
                     results.forEach(function (result) {

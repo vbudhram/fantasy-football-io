@@ -19,30 +19,31 @@ app.controller('AccountCtrl', ['$scope', '$http', '$modal', '$log', function ($s
             controller: ModalInstanceCtrl
         });
 
-        modalInstance.result.then(function () {
-            $log.info('Modal stuff happend');
+        modalInstance.result.then(function (site) {
+            $log.info('Modal stuff happened');
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());
         });
     };
 }]);
 
-var ModalInstanceCtrl = function ($scope, $http, $modalInstance) {
+var ModalInstanceCtrl = function ($scope, $http, $modalInstance, SiteService) {
     $scope.loading = false;
+
+    $scope.siteOptions = SiteService.getSiteOptions();
+
     $scope.ok = function () {
-        if($scope.site.name){
-            $scope.site.error = 'Please select a site.';
-        }else{
-            $http({
-                method: 'post',
-                url: '/' + $scope.site.name
-            }).success(function (data, status) {
-                $scope.user = data;
-                $modalInstance.close();
-            }).error(function (data, status) {
-                console.log(data);
-                $scope.site.error = data;
+        if(this.addSiteForm.$valid){
+            $scope.loading = true;
+            SiteService.addSite(this.site.name.name, this.site.email, this.site.password).then(function(value){
+                $scope.loading = false;
+                $modalInstance.close(value);
+            }, function(error){
+                $scope.loading = false;
+                $scope.error = error.error;
             });
+        }else{
+            $scope.error = 'Please enter all values.';
         }
     };
 

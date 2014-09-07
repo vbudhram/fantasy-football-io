@@ -1,16 +1,19 @@
 /**
  * Created by vbudhram on 9/2/14.
  */
-app.controller('SiteCtrl', ['$scope', '$http', function ($scope, $http) {
+'use strict';
+
+app.controller('SiteCtrl', ['$scope', '$http', 'SiteService', function ($scope, $http, SiteService) {
 
     $scope.loading = true;
+    $scope.teams = [];
 
-    $http({method: 'get', url: '/espn/football'}).
-        success(function (data, status) {
-            $scope.teams = data;
-            $scope.loading = false;
-        }).
-        error(function (data, status) {
-            $scope.loading = false;
-        });
+    SiteService.getTeams('espn','football').then(function(result){
+        $scope.loading = false;
+        $scope.teams = result.teams;
+    }, function(err){
+        console.log('Failed to get teams' + err);
+        $scope.loading = false;
+        $scope.teams = [];
+    });
 }]);

@@ -227,6 +227,29 @@ describe('Fantasy Football IO API Test', function () {
                         }
                     });
             });
+
+            it('should add another espn account', function (done) {
+                agent.post('/espn')
+                    .send(espnCredentials)
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) {
+                            done(err);
+                        } else {
+                            done();
+                        }
+                    });
+            });
+
+            it('should reject invalid account', function (done) {
+                agent.post('/espn')
+                    .send({username:'asdf', password:'asdf'})
+                    .expect(400)
+                    .end(function (err, res) {
+                        console.log(res.body);
+                        done();
+                    });
+            });
         });
     });
 });

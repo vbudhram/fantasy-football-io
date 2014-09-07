@@ -166,7 +166,7 @@ apiRouter.route('/users', auth)
         });
     });
 
-// Add espn team to logged in user
+// Add team to logged in user
 apiRouter.route('/:site')
     .get(function (req, res) {
         db.User.find({'email': req.user[0].email, 'sites.name': req.params.site}).exec(function (err, results) {
@@ -175,11 +175,18 @@ apiRouter.route('/:site')
                 res.send(400, err);
             } else {
                 if (user) {
+
+                    var apiResult = {
+                        sites: []
+                    };
+
                     user.sites.forEach(function (site) {
                         if (site.name === req.params.site) {
-                            res.json(site);
+                            apiResult.sites.push(site);
                         }
                     });
+
+                    res.json(apiResult);
                 } else {
                     res.send(400, 'Invalid request');
                 }
@@ -201,8 +208,7 @@ apiRouter.route('/:site')
                 db.User.find({'email': req.user[0].email}).exec(function (err, results) {
                     var user = results[0];
 
-                    user.sites = [];
-                    user.sites.push({
+                    var site = {
                         name: 'espn',
                         username: encryptionUtils.encrypt(username),
                         password: encryptionUtils.encrypt(password),
@@ -212,28 +218,22 @@ apiRouter.route('/:site')
                                 teams: []
                             }
                         ]
-                    });
+                    };
 
                     espnUtils.getTeams(username, password).then(function (teams) {
-                        user.sites.forEach(function (site) {
-                            if (site.name === 'espn') {
-                                site.sports.forEach(function (sport) {
-                                    if (sport.name === 'football') {
-                                        sport.teams = teams;
-                                    }
-                                });
-                            }
-                        });
+                        site.sports[0].teams = teams;
+                        user.sites.push(site);
                         user.save(function (err, result) {
                             if (err) {
                                 res.send(400, err);
                             } else {
-                                res.json(user);
+                                res.json(site);
                             }
                         });
+                    }, function(err){
+                        res.status(400).send({ error: err.message });
                     });
                 });
-
             }
         }
     });
@@ -246,23 +246,24 @@ apiRouter.route('/:site/:sport')
                 res.send(400, err);
             } else {
                 if (user) {
-                    var found = false;
+                    var teams = [];
+
+                    // Combine all espn football teams
                     user.sites.forEach(function (site) {
                         if (site.name === req.params.site) {
                             site.sports.forEach(function (sport) {
                                 if (sport.name === req.params.sport) {
-                                    res.json(sport.teams);
-                                    found = true;
+                                    teams = teams.concat(sport.teams);
                                 }
                             });
                         }
                     });
 
-                    if (!found) {
-                        res.send(200, {});
-                    }
+                    res.json({
+                        teams: teams
+                    });
                 } else {
-                    res.send(400, 'No valid user found to complete request');
+                    res.send(400);
                 }
             }
         });
