@@ -102,20 +102,20 @@
                         var position = cell.children[0].children[0].data;
                         var playerTeamName = cell.children[1].children[1].data.replace(',', "").trim();
 
-                        if(teamUrl.indexOf('2014') > -1){
+                        if (teamUrl.indexOf('2014') > -1) {
                             // TODO Figure this out later, not sure how to handle current year, point and rankings
                             var slot = cell.children[0].children[0].data;
                             var opponent = cell.children[4].children[0].children[0].children[0].data;
                             var player = {
                                 position: position,
-                                playerName : playerName,
+                                playerName: playerName,
                                 playerTeamName: playerTeamName,
                                 opponent: opponent
                             };
 
                             players.push(player);
                             active = true;
-                        }else{
+                        } else {
                             // ESPN has different layouts for previous years
                             var positionRank = cell.children[3].children[0].data;
                             var totalPoints = cell.children[4].children[0].data;
@@ -132,18 +132,20 @@
                     var rank = $('.games-univ-mod4')[0].children[0].children[2].children[0].data.replace('(', '').replace(')', '');
                     var teamImageUrl = $('#content > div:nth-child(1) > div.gamesmain.container > div > div > div:nth-child(3) > div.games-topcol.games-topcol-expand > div.games-univ-mod1 > a > img')[0].attribs.src;
                     var leagueName = $('#content > div:nth-child(1) > div.gamesmain.container > div > div > div:nth-child(3) > div.games-topcol.games-topcol-expand > div:nth-child(2) > div.games-univ-mod3 > ul:nth-child(2) > li > a > strong')[0].children[0].data;
+                    var scoreboardUrl = teamUrl.replace('clubhouse', 'scoreboard');
                     console.log('Resolving team data for ' + teamUrl);
-//                    var team = new Team(teamName, shortName, record, rank, teamUrl, teamImageUrl, players);
+
                     var team = {
                         active: active,
                         name: teamName,
                         shortName: shortName,
                         record: record,
                         rank: rank,
-                        teamUrl : teamUrl,
-                        teamImageUrl : teamImageUrl,
-                        leagueName : leagueName,
-                        players : players
+                        teamUrl: teamUrl,
+                        teamImageUrl: teamImageUrl,
+                        leagueName: leagueName,
+                        leagueScoreboardUrl: scoreboardUrl,
+                        players: players
                     };
 
                     getTeamQ.resolve(team);
@@ -195,8 +197,132 @@
         return getNewsQ.promise;
     }
 
+    function getScoreboards(user, crytoUtils) {
+        var deferred = q.defer();
+
+        var scoreboards = [];
+        var loginDefers = [];
+        user.sites.forEach(function (site) {
+            if (site.name === 'espn') {
+                var username = crytoUtils.decrypt(site.username);
+                var password = crytoUtils.decrypt(site.password);
+                loginDefers.push(login(username, password));
+            }
+        });
+
+        q.all(loginDefers).then(function (loginResults) {
+            var defers = [];
+            for (var i = 0; i < loginResults.length; i++) {
+                var cookieJar = loginResults[i].cookieJar;
+                var site = user.sites[i];
+
+                site.sports[0].teams.forEach(function (team) {
+                    var url = team.leagueScoreboardUrl;
+                    defers.push(getScoreboard(url, cookieJar));
+                });
+            }
+
+            q.allSettled(defers).done(function (results) {
+                results.forEach(function(result){
+                    if(result.state === 'fulfilled'){
+                        scoreboards = scoreboards.concat(result.value);
+                    }
+                });
+                deferred.resolve(scoreboards);
+            });
+
+        }, function (err) {
+            deferred.reject(err);
+        });
+
+
+        return deferred.promise;
+    }
+
+    function getScoreboard(url, cookieJar) {
+        console.log('Getting ESPN scoreboard for ' + url);
+
+        var deferred = q.defer();
+
+        var request = require('request');
+        var cheerio = require('cheerio');
+
+        // Get team page and extract name, record, and players
+        var scoreboardOptions = {
+            url: url,
+            method: 'GET',
+            jar: cookieJar,
+            followAllRedirects: true
+        };
+        request(scoreboardOptions, function (err, res, body) {
+            if (err) {
+                deferred.reject(err);
+            } else {
+
+                try {
+                    var $ = cheerio.load(body);
+                    var teams = [];
+                    var names = $('.name');
+                    for (var i = 0; i < names.length; i++) {
+                        var name = names[i].children[0].children[0].data;
+                        if (teams[i] === undefined) {
+                            teams[i] = {};
+                        }
+
+                        teams[i].name = name;
+                    }
+
+                    var scores = $('.score');
+                    for (var i = 0; i < scores.length; i++) {
+                        var score = scores[i].children[0].data;
+                        teams[i].score = score;
+                    }
+
+                    var plays = $('.playersPlayed');
+                    for (var i = 0; i < plays.length; i++) {
+                        var ytp = plays[i].children[0].children[0].data;
+                        var ip = plays[i].children[1].children[0].data;
+                        var proj = plays[i].children[3].children[0].data;
+                        teams[i].yetToPlay = ytp;
+                        teams[i].inPlay = ip;
+                        teams[i].projected = proj;
+                    }
+
+                    var matchupCount = teams.length / 2;
+                    var games = [];
+                    var teamIndex = 0;
+                    for (var i = 0; i < matchupCount; i++) {
+                        games[i] = {
+                            homeTeam: [teams[teamIndex]],
+                            awayTeam: [teams[teamIndex + 1]]
+                        };
+
+                        teamIndex = teamIndex + 2;
+                    }
+
+                    var scoreboardName = $('#content > div:nth-child(1) > div.gamesmain.container > div > div > div.games-fullcol.games-fullcol-extramargin > div.games-pageheader > div:nth-child(2) > h1')[0].children[0].data;
+                    var scoreboard = {
+                        name: scoreboardName,
+                        url: url,
+                        games: games
+                    };
+
+                    deferred.resolve(scoreboard);
+
+                } catch (err) {
+                    deferred.reject(err);
+                }
+            }
+        });
+
+        return deferred.promise;
+    }
+
     module.exports = {
+        login: login,
         getHeadlines: getHeadlines,
+        getScoreboards: getScoreboards,
+        getScoreboard: getScoreboard,
         getTeams: function (username, password) {
             var resultQ = q.defer();
 
@@ -218,7 +344,7 @@
                 }
 
                 // If no teams were found, don't add to account
-                if(promises.length < 1) {
+                if (promises.length < 1) {
                     resultQ.reject(new Error('No teams found in this account.'));
                 }
 
@@ -242,4 +368,3 @@
         }
     };
 }());
-

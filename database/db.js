@@ -14,6 +14,26 @@ module.exports = function (connectionUrl) {
         }
     });
 
+    // Live Scoring Models
+    var LeagueTeam = new mongoose.Schema({
+        name: {type: String},
+        score: {type: String},
+        inPlay: {type: String},
+        yetToPlay: {type: String},
+        projected: {type: String}
+    });
+
+    var LeagueMatchup = new mongoose.Schema({
+        homeTeam: [LeagueTeam],
+        awayTeam: [LeagueTeam]
+    });
+
+    var LeagueScoreboard = new mongoose.Schema({
+        name: {type: String},
+        url: {type: String, unique: true},
+        games: [LeagueMatchup]
+    });
+
     // News Models
     var NewsArticle = new mongoose.Schema({
         title: {type: String},
@@ -45,6 +65,7 @@ module.exports = function (connectionUrl) {
         teamImageUrl: {type: String},
         teamUrl: {type: String},
         leagueName: {type: String},
+        leagueScoreboardUrl: {type: String},
         players: [Player]
     });
 
@@ -69,7 +90,8 @@ module.exports = function (connectionUrl) {
 
     return {
         User: mongoose.model('Users', User),
-        NewsArticle: mongoose.model('NewsArticle', NewsArticle)
+        NewsArticle: mongoose.model('NewsArticle', NewsArticle),
+        LeagueScoreboard: mongoose.model('LeagueScoreboard', LeagueScoreboard)
     };
 
 //    return {

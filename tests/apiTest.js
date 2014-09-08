@@ -19,7 +19,6 @@ before('should clean database', function (done) {
         db.dropDatabase(function (err, result) {
             done();
         });
-
     });
 });
 
@@ -250,6 +249,70 @@ describe('Fantasy Football IO API Test', function () {
                         done();
                     });
             });
+        });
+    });
+
+    describe.only('Scoreboard API', function () {
+        var request = require('supertest');
+        var agent = request.agent('localhost:8080');
+
+        before('should add user', function (done) {
+
+            var validUserInfo = {
+                email: 'vbudhram3@gmail.com',
+                password: 'password'
+            };
+
+            agent.post('/users')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .send(validUserInfo)
+                .end(function (err, res) {
+                    if (err) {
+                        done(err);
+                    } else {
+                        done();
+                    }
+                });
+        });
+
+        it('should login', function (done) {
+            var validUserInfo = {
+                email: 'vbudhram3@gmail.com',
+                password: 'password'
+            };
+
+            agent.post('/doLogin')
+                .send(validUserInfo)
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        done(err);
+                    } else {
+                        done();
+                    }
+                });
+        });
+
+        it('should add espn user information for user', function (done) {
+            agent.post('/espn')
+                .send(espnCredentials)
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        done(err);
+                    } else {
+                        done();
+                    }
+                });
+        });
+
+        it('should add scoreboards for user leagues', function (done) {
+            agent.post('/espn/football/scoreboard')
+                .expect(200)
+                .end(function (err, res) {
+                    done();
+                });
         });
     });
 });

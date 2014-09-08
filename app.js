@@ -221,6 +221,7 @@ apiRouter.route('/:site')
                     };
 
                     espnUtils.getTeams(username, password).then(function (teams) {
+                        // TODO Fix this when supporting multiple sites
                         site.sports[0].teams = teams;
                         user.sites.push(site);
                         user.save(function (err, result) {
@@ -230,7 +231,7 @@ apiRouter.route('/:site')
                                 res.json(site);
                             }
                         });
-                    }, function(err){
+                    }, function (err) {
                         res.status(400).send({ error: err.message });
                     });
                 });
@@ -265,6 +266,40 @@ apiRouter.route('/:site/:sport')
                 } else {
                     res.send(400);
                 }
+            }
+        });
+    });
+
+apiRouter.route('/:site/:sport/scoreboard')
+    .get(function (req, res) {
+        db.User.find({'email': req.user[0].email, 'sites.name': req.params.site}).exec(function (err, results) {
+            if (err) {
+                res.send(400, err);
+            } else {
+                // TODO implement this
+                res.send(200);
+            }
+        });
+    })
+    .post(function (req, res) {
+        db.User.find({'email': req.user[0].email, 'sites.name': req.params.site}).exec(function (err, results) {
+            var user = results[0];
+            if (user) {
+                switch (req.params.site) {
+                    case 'espn':
+                    {
+                        espnUtils.getScoreboards(user, encryptionUtils).then(function (scoreboards) {
+                            db.LeagueScoreboard.create(scoreboards, function (err, result) {
+                                res.json(result);
+                            });
+                        }, function (err) {
+                            res.status(400).send({ error: err.message });
+                        });
+                    }
+                }
+
+            } else {
+                res.send(400, {error: 'Unable to get user\'s scoreboard'});
             }
         });
     });
