@@ -91,36 +91,41 @@
                     var playerCells = $('.pncPlayerRow');
                     var active = false;
                     for (var i = 0; i < playerCells.length; i++) {
-                        var cell = playerCells[i];
+                        try {
+                            var cell = playerCells[i];
 
-                        // Don't add empty players
-                        if (cell.children[1].children[0].children === undefined) {
-                            continue;
-                        }
-                        var playerName = cell.children[1].children[0].children[0].data;
+                            // Don't add empty players
+                            if (cell.children[1].children[0].children === undefined) {
+                                continue;
+                            }
 
-                        var position = cell.children[0].children[0].data;
-                        var playerTeamName = cell.children[1].children[1].data.replace(',', "").trim();
+                            var playerName = cell.children[1].children[0].children[0].data;
+                            var position = cell.children[0].children[0].data;
+                            var playerTeamName = cell.children[1].children[1].data.replace(',', "").trim();
 
-                        if (teamUrl.indexOf('2014') > -1) {
-                            // TODO Figure this out later, not sure how to handle current year, point and rankings
-                            var slot = cell.children[0].children[0].data;
-                            var opponent = cell.children[4].children[0].children[0].children[0].data;
-                            var player = {
-                                position: position,
-                                playerName: playerName,
-                                playerTeamName: playerTeamName,
-                                opponent: opponent
-                            };
+                            if (teamUrl.indexOf('2014') > -1) {
+                                // TODO Figure this out later, not sure how to handle current year, point and rankings
+                                var slot = cell.children[0].children[0].data;
+                                var opponent = cell.children[4].children[0].children[0].children[0].data;
+                                var player = {
+                                    position: position,
+                                    playerName: playerName,
+                                    playerTeamName: playerTeamName,
+                                    opponent: opponent
+                                };
 
-                            players.push(player);
-                            active = true;
-                        } else {
-                            // ESPN has different layouts for previous years
-                            var positionRank = cell.children[3].children[0].data;
-                            var totalPoints = cell.children[4].children[0].data;
-                            var averagePoints = cell.children[5].children[0].data;
-                            players.push(new Player(playerName, playerTeamName, position, positionRank, totalPoints, averagePoints));
+                                players.push(player);
+                                active = true;
+                            } else {
+                                // ESPN has different layouts for previous years
+                                var positionRank = cell.children[3].children[0].data;
+                                var totalPoints = cell.children[4].children[0].data;
+                                var averagePoints = cell.children[5].children[0].data;
+                                players.push(new Player(playerName, playerTeamName, position, positionRank, totalPoints, averagePoints));
+                            }
+                        }catch(err){
+                            console.log('Failed parsing player : ' + playerName);
+                            console.log(err.stack);
                         }
                     }
 

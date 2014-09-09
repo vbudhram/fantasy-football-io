@@ -1,0 +1,36 @@
+<div ng-controller="ScoreboardCtrl" ng-init="getScoreboards('espn','football')">
+    <div class="col-lg-2 teamPanel" ng-repeat="scoreboard in scoreboards">
+        <div class="widget">
+            <div class="widget-title">
+                {{scoreboard.name}}
+            </div>
+        </div>
+        <div ng-repeat="game in scoreboard.games">
+
+            <!--<div ng-repeat="team in game.homeTeam">-->
+            <!--<div class="title">{{team.name}}</div>-->
+            <!--</div>-->
+            <div class="widget" ng-repeat="team in game.awayTeam">
+                <div class="widget-body no-padding">
+                    <div class="widget-content no-padding">
+                        <h5 class="col-xs-9">{{team.name}}</h5>
+                        <h5 class="col-xs-3">{{team.score}}</h5>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="widget" ng-repeat="team in game.homeTeam">
+                <div class="widget-body no-padding">
+                    <div class="widget-content no-padding">
+                        <h5 class="col-xs-9">{{team.name}}</h5>
+                        <h5 class="col-xs-3">{{team.score}}</h5>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+            <br/>
+        </div>
+    </div>
+    {{error}}
+</div>

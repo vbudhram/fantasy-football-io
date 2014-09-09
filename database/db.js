@@ -93,10 +93,4 @@ module.exports = function (connectionUrl) {
         NewsArticle: mongoose.model('NewsArticle', NewsArticle),
         LeagueScoreboard: mongoose.model('LeagueScoreboard', LeagueScoreboard)
     };
-
-//    return {
-//        User: require('./schemas/User')(mongoose),
-//        Team: require('./schemas/Team')(mongoose),
-//        Player: require('./schemas/Player')(mongoose)
-//    };
 };

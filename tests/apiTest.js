@@ -252,7 +252,7 @@ describe('Fantasy Football IO API Test', function () {
         });
     });
 
-    describe.only('Scoreboard API', function () {
+    describe('Scoreboard API', function () {
         var request = require('supertest');
         var agent = request.agent('localhost:8080');
 

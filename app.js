@@ -270,17 +270,7 @@ apiRouter.route('/:site/:sport')
         });
     });
 
-apiRouter.route('/:site/:sport/scoreboard')
-    .get(function (req, res) {
-        db.User.find({'email': req.user[0].email, 'sites.name': req.params.site}).exec(function (err, results) {
-            if (err) {
-                res.send(400, err);
-            } else {
-                // TODO implement this
-                res.send(200);
-            }
-        });
-    })
+apiRouter.route('/scoreboard/:site/:sport')
     .post(function (req, res) {
         db.User.find({'email': req.user[0].email, 'sites.name': req.params.site}).exec(function (err, results) {
             var user = results[0];
@@ -290,14 +280,16 @@ apiRouter.route('/:site/:sport/scoreboard')
                     {
                         espnUtils.getScoreboards(user, encryptionUtils).then(function (scoreboards) {
                             db.LeagueScoreboard.create(scoreboards, function (err, result) {
-                                res.json(result);
+                                var apiResult = {
+                                    scoreboards : scoreboards
+                                };
+                                res.json(apiResult);
                             });
                         }, function (err) {
                             res.status(400).send({ error: err.message });
                         });
                     }
                 }
-
             } else {
                 res.send(400, {error: 'Unable to get user\'s scoreboard'});
             }
