@@ -283,14 +283,18 @@
                         teams[i].score = score;
                     }
 
-                    var plays = $('.playersPlayed');
-                    for (var i = 0; i < plays.length; i++) {
-                        var ytp = plays[i].children[0].children[0].data;
-                        var ip = plays[i].children[1].children[0].data;
-                        var proj = plays[i].children[3].children[0].data;
-                        teams[i].yetToPlay = ytp;
-                        teams[i].inPlay = ip;
-                        teams[i].projected = proj;
+                    try{
+                        var plays = $('.playersPlayed');
+                        for (var i = 0; i < plays.length; i++) {
+                            var ytp = plays[i].children[0].children[0].data;
+                            var ip = plays[i].children[1].children[0].data;
+                            var proj = plays[i].children[3].children[0].data;
+                            teams[i].yetToPlay = ytp;
+                            teams[i].inPlay = ip;
+                            teams[i].projected = proj;
+                        }
+                    }catch(e){
+                        console.log(e);
                     }
 
                     var matchupCount = teams.length / 2;

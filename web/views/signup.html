@@ -1,35 +1,35 @@
-<div class="col-lg-offset-4 col-lg-4 col-md-offset-3 col-md-6">
+<div class="col-lg-offset-4 col-lg-4 col-md-offset-3 col-md-6" ng-controller="MasterCtrl">
     <div style="margin-top:50px;" class="widget">
         <div class="widget-title">
             <i class="fa fa-users"></i> Fantasy Ally Signup
             <div class="clearfix"></div>
         </div>
         <div class="widget-body">
-            <form id="signupForm" class="form-horizontal" role="form">
+            <form id="signupForm" class="form-horizontal" ng-submit="signup()">
 
                 <div style="margin-bottom: 25px" class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                     <input id="signup-username" type="text" class="form-control" name="username" value=""
-                           placeholder="Email" ng-model="signup.email">
+                           placeholder="Email" ng-model="email">
                 </div>
 
                 <div style="margin-bottom: 25px" class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                     <input id="signup-password" type="password" class="form-control" name="password"
-                           placeholder="Password" ng-model="signup.password">
+                           placeholder="Password" ng-model="password">
                 </div>
 
                 <div style="margin-bottom: 25px" class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                     <input id="repeat-password" type="password" class="form-control" name="password"
-                           placeholder="Re-enter password" ng-model="signup.confirm">
+                           placeholder="Re-enter password" ng-model="confirm">
                 </div>
 
                 <div style="margin-top:10px" class="form-group">
                     <!-- Button -->
 
                     <div class="col-sm-12 controls">
-                        <a id="btn-signup" class="btn btn-success" ng-click="signup()">Signup </a>
+                        <button id="btn-signup" class="btn btn-success" type="submit">Signup </button>
                     </div>
                 </div>
                 <div class="message error">

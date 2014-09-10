@@ -83,28 +83,28 @@ app.controller('MasterCtrl', ['$scope', '$http', '$rootScope', 'cfpLoadingBar', 
     $scope.signup = function(){
         console.log('Signing up user');
 
-        if(!validateEmail($scope.signup.email)){
-            $scope.signup.error = 'Please enter a valid email.';
-        }else if($scope.signup.password !== undefined){
-            $scope.signup.error = 'Pltease enter a password.';
-        }else if ($scope.signup.password !== $scope.signup.confirm){
-            $scope.signup.error = 'Passwords do not match.';
+        if(!validateEmail($scope.email)){
+            $scope.error = 'Please enter a valid email.';
+        }else if($scope.password === undefined){
+            $scope.error = 'Please enter a password.';
+        }else if ($scope.password !== $scope.confirm){
+            $scope.error = 'Passwords do not match.';
         }else{
             cfpLoadingBar.start();
 
             $http({
                 method: 'post',
                 url: '/users',
-                data: {email: $scope.signup.email, password: $scope.signup.password}
+                data: {email: $scope.email, password: $scope.password}
             }).success(function (data, status, headers, config) {
-                $scope.user = $scope.login.email;
+                $scope.user = $scope.email;
                 $cookieStore.put('user', data);
                 cfpLoadingBar.complete();
                 $scope.signup = undefined;
-                $window.location.href = '#/news';
+                $location.path('/news');
             }).error(function (data, status, headers, config) {
                 cfpLoadingBar.complete();
-                $scope.signup.error = data;
+                $scope.error = data;
             });
         }
 

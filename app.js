@@ -104,6 +104,7 @@ apiRouter.route('/users')
                 if (err) {
                     res.send(400, err);
                 } else {
+
                     res.json(result);
                 }
             });
