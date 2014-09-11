@@ -106,7 +106,6 @@
 <div id="page-wrapper" ng-class="{'active': toggle}" ng-cloak>
 
     <!-- Sidebar -->
-
     <div id="sidebar-wrapper">
         <ul class="sidebar">
             <li class="sidebar-main">
@@ -154,9 +153,9 @@
             <div class="row header">
                 <div class="col-xs-12">
                     <div class="user pull-right">
-                        <div ng-if="user" class="item dropdown">
+                        <div ng-show="user" class="item dropdown">
                             <a href="#" class="dropdown-toggle">
-                                <img ng-src="{{avatarUrl}}">
+                                <img ng-src="{{user.avatarUrl}}">
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li class="dropdown-header">
@@ -176,7 +175,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <div ng-if="!user" class="login-controls">
+                        <div ng-show="!user" class="login-controls">
                             <a href="#/login">Login</a>
                             /
                             <a href="#/signup">Signup</a>
@@ -189,7 +188,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- End Header Bar -->
 
             <!-- Main Content -->
@@ -200,7 +198,7 @@
     <!-- End Content Wrapper -->
 </div>
 <!-- End Page Wrapper -->
-<div ng-view></div>
+<!--<div ng-view></div>-->
 
 </body>
 </html>

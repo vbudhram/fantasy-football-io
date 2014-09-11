@@ -3,7 +3,7 @@
  */
 
 'use strict';
-app.controller('MasterCtrl', ['$scope', '$http', '$rootScope', 'cfpLoadingBar', '$location', '$cookieStore', '$window', 'md5', 'UserService', function ($scope, $http, $rootScope, cfpLoadingBar, $location, $cookieStore, $window, md5, UserService) {
+app.controller('MasterCtrl', ['$scope', '$http', '$rootScope', 'cfpLoadingBar', '$location', '$cookieStore', '$window', 'UserService', function ($scope, $http, $rootScope, cfpLoadingBar, $location, $cookieStore, $window, UserService) {
     /**
      * Sidebar Toggle & Cookie Control
      *
@@ -45,51 +45,42 @@ app.controller('MasterCtrl', ['$scope', '$http', '$rootScope', 'cfpLoadingBar', 
 
     $scope.init = function init() {
         console.log("Initalizing controller");
-        $scope.user = $cookieStore.get('user');
-        var imageUrl = $scope.avatarUrl = $scope.user ? ('http://www.gravatar.com/avatar/' + md5.createHash($scope.user.email)) : 'img/avatar.jpg';
+        $scope.user = UserService.getCurrentUser();
         $scope.signup = undefined;
     };
 
     $scope.login = function login() {
         cfpLoadingBar.start();
-        console.log('Logging in');
         $scope.login.error = '';
-        $http({
-            method: 'post',
-            url: '/doLogin',
-            data: {email: $scope.login.email, password: $scope.login.password}
-        }).success(function (data, status, headers, config) {
-            console.log('Completed login request');
-
-            $scope.user = $scope.login.email;
-            $cookieStore.put('user', data);
-            cfpLoadingBar.complete();
-            $window.location.href = '#/news';
-
-        }).error(function (data, status, headers, config) {
-            console.log(data);
-            cfpLoadingBar.complete();
-            $scope.login.error = data;
+        UserService.login($scope.login.email, $scope.login.password).then(function (data) {
+            $scope.$parent.user = data;
+            $location.path('#/news');
+        }, function (err) {
+            $scope.login.error = err;
         });
     };
 
     $scope.logout = function logout() {
-        console.log('Logging out');
-        $scope.user = undefined;
-        $cookieStore.remove('user');
-        $location.path('/login');
+        cfpLoadingBar.start();
+        UserService.logout().then(function (data) {
+            cfpLoadingBar.complete();
+            $scope.user = undefined;
+            $location.path('/login');
+        }, function (err) {
+            $location.path('/login');
+        });
     };
 
-    $scope.signup = function(){
+    $scope.signup = function () {
         console.log('Signing up user');
 
-        if(!validateEmail($scope.email)){
+        if (!validateEmail($scope.email)) {
             $scope.error = 'Please enter a valid email.';
-        }else if($scope.password === undefined){
+        } else if ($scope.password === undefined) {
             $scope.error = 'Please enter a password.';
-        }else if ($scope.password !== $scope.confirm){
+        } else if ($scope.password !== $scope.confirm) {
             $scope.error = 'Passwords do not match.';
-        }else{
+        } else {
             cfpLoadingBar.start();
 
             $http({

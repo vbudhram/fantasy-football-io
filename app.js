@@ -78,6 +78,11 @@ authRouter.post('/doLogin', function (req, res, next) {
     })(req, res, next);
 });
 
+authRouter.post('/logout', function (req, res, next) {
+    console.log('Logging out');
+    req.logout();
+    res.send(204);
+});
 
 app.use(authRouter);
 
@@ -282,7 +287,7 @@ apiRouter.route('/scoreboard/:site/:sport')
                         espnUtils.getScoreboards(user, encryptionUtils).then(function (scoreboards) {
                             db.LeagueScoreboard.create(scoreboards, function (err, result) {
                                 var apiResult = {
-                                    scoreboards : scoreboards
+                                    scoreboards: scoreboards
                                 };
                                 res.json(apiResult);
                             });
