@@ -55,6 +55,25 @@ app.service('SiteService', function ($http, $q) {
     };
 
     /**
+     * Removes a site from a user.
+     * @param site
+     * @returns {*}
+     */
+    this.removeSite = function (site) {
+        // TODO, find out how to get a unique id for the site, not to happy about removing based on user index.
+        console.log('Removing site ' + site + ', id: ' + site._id);
+        var deferred = $q.defer();
+        $http.delete('/' + site.name + '/' + site._id)
+            .success(function (data, status) {
+                deferred.resolve(data);
+            }).error(function (data, status) {
+                deferred.reject(data);
+            });
+
+        return deferred.promise;
+    };
+
+    /**
      * Returns all teams for all site and sport combination.
      * @param site
      * @param sport

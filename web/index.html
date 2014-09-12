@@ -82,6 +82,12 @@
         })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
         ga('create', 'UA-43107610-2', { 'cookieDomain': 'none' });
     </script>
+    <!-- build:js lib/socketio.js -->
+    <script type="text/javascript" src="bower_components/socket.io-client/socket.io.js"></script>
+    <script>
+        var socket = io();
+    </script>
+    <!-- endbuild -->
 
     <!-- build:js js/dashboard.js -->
     <script type="text/javascript" src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
@@ -199,6 +205,5 @@
 </div>
 <!-- End Page Wrapper -->
 <!--<div ng-view></div>-->
-
 </body>
 </html>

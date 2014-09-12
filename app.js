@@ -19,6 +19,8 @@ var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
 var session = require('express-session');
 var flash = require('connect-flash');
+var io = require('socket.io');
+var http = require('http');
 
 // Database and models import
 var db = require('./database/db')(DB_URL);
@@ -172,7 +174,6 @@ apiRouter.route('/users', auth)
         });
     });
 
-// Add team to logged in user
 apiRouter.route('/:site')
     .get(function (req, res) {
         db.User.find({'email': req.user[0].email, 'sites.name': req.params.site}).exec(function (err, results) {
@@ -245,6 +246,31 @@ apiRouter.route('/:site')
         }
     });
 
+apiRouter.route('/:site/:id')
+.delete(function (req, res) {
+    var id = req.params.id;
+    db.User.find({'email': req.user[0].email}).exec(function (err, results) {
+        var user = results[0];
+        if (err) {
+            res.send(400, err);
+        } else {
+            if (user) {
+                user.sites.id(id).remove();
+                user.save(function (err, result) {
+                    if (err) {
+                        res.send(400, err);
+                    } else {
+                        res.send(204);
+                    }
+                });
+
+            } else {
+                res.send(400, 'Invalid request');
+            }
+        }
+    });
+})
+
 apiRouter.route('/:site/:sport')
     .get(function (req, res) {
         db.User.find({'email': req.user[0].email, 'sites.name': req.params.site}).exec(function (err, results) {
@@ -304,7 +330,14 @@ apiRouter.route('/scoreboard/:site/:sport')
 
 app.use(apiRouter);
 
-app.listen(PORT, function () {
+// Setup socketio
+var server = http.Server(app);
+var socketio = io(server);
+socketio.on('connection', function () {
+    console.log('Connected to socket!');
+});
+
+server.listen(PORT, function () {
     console.log('Server started on ' + PORT);
 });
 

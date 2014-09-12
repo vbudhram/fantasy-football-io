@@ -3,7 +3,7 @@
  */
 'use strict';
 
-app.controller('AccountCtrl', ['$scope', '$http', '$modal', '$log', function ($scope, $http, $modal, $log) {
+app.controller('AccountCtrl', ['$scope', '$http', '$modal', '$log', 'SiteService', function ($scope, $http, $modal, $log, SiteService) {
 
     $http({method: 'get', url: '/users'}).
         success(function (data, status) {
@@ -25,6 +25,14 @@ app.controller('AccountCtrl', ['$scope', '$http', '$modal', '$log', function ($s
             $log.info('Modal dismissed at: ' + new Date());
         });
     };
+
+    $scope.removeSite = function (index) {
+        SiteService.removeSite($scope.user.sites[index]).then(function (result) {
+            $scope.user.sites.splice(index, 1);
+        }, function (err) {
+            $log.error(err);
+        });
+    };
 }]);
 
 var ModalInstanceCtrl = function ($scope, $http, $modalInstance, SiteService) {
@@ -33,16 +41,16 @@ var ModalInstanceCtrl = function ($scope, $http, $modalInstance, SiteService) {
     $scope.siteOptions = SiteService.getSiteOptions();
 
     $scope.ok = function () {
-        if(this.addSiteForm.$valid){
+        if (this.addSiteForm.$valid) {
             $scope.loading = true;
-            SiteService.addSite(this.site.name.name, this.site.email, this.site.password).then(function(value){
+            SiteService.addSite(this.site.name.name, this.site.email, this.site.password).then(function (value) {
                 $scope.loading = false;
                 $modalInstance.close(value);
-            }, function(error){
+            }, function (error) {
                 $scope.loading = false;
                 $scope.error = error.error;
             });
-        }else{
+        } else {
             $scope.error = 'Please enter all values.';
         }
     };

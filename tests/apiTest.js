@@ -250,19 +250,109 @@ describe('Fantasy Football IO API Test', function () {
                     });
             });
         });
+
+        describe('should remove espn site from account', function(){
+            var request = require('supertest');
+            var agent = request.agent('localhost:8080');
+
+            var validUserInfo = {
+                email: 'remove@gmail.com',
+                password: 'password'
+            };
+
+            before('should add user', function (done) {
+                agent.post('/users')
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .send(validUserInfo)
+                    .end(function (err, res) {
+                        if (err) {
+                            done(err);
+                        } else {
+                            user = res.body;
+                            done();
+                        }
+                    });
+            });
+
+            before('should login', function (done) {
+                agent.post('/doLogin')
+                    .send(validUserInfo)
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) {
+                            done(err);
+                        } else {
+                            done();
+                        }
+                    });
+            });
+
+            it('should add espn site to account', function (done) {
+                agent.post('/espn')
+                    .send(espnCredentials)
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) {
+                            done(err);
+                        } else {
+                            done();
+                        }
+                    });
+            });
+
+            var user;
+            it('should get user', function (done) {
+                agent.get('/users')
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) {
+                            done(err);
+                        } else {
+                            user = res.body;
+                            done();
+                        }
+                    });
+            });
+
+
+            it('should remove espn site from account', function (done) {
+                agent.delete('/espn/'+user.sites[0]._id)
+                    .expect(204)
+                    .end(function (err, res) {
+                        if(err){
+                            done(err);
+                        }else{
+                            done();
+                        }
+                    });
+            });
+
+            it('should have user sites for user', function (done) {
+                agent.get('/users')
+                    .expect(200)
+                    .end(function (err, res) {
+                        if(err){
+                            done(err);
+                        }else{
+                            res.body.sites.length.should.equal(0);
+                            done();
+                        }
+                    });
+            });
+        });
     });
 
     describe('Scoreboard API', function () {
         var request = require('supertest');
         var agent = request.agent('localhost:8080');
 
+        var validUserInfo = {
+            email: 'score@gmail.com',
+            password: 'password'
+        };
+
         before('should add user', function (done) {
-
-            var validUserInfo = {
-                email: 'vbudhram3@gmail.com',
-                password: 'password'
-            };
-
             agent.post('/users')
                 .expect('Content-Type', /json/)
                 .expect(200)
@@ -277,11 +367,6 @@ describe('Fantasy Football IO API Test', function () {
         });
 
         it('should login', function (done) {
-            var validUserInfo = {
-                email: 'vbudhram3@gmail.com',
-                password: 'password'
-            };
-
             agent.post('/doLogin')
                 .send(validUserInfo)
                 .expect(200)
