@@ -22,7 +22,7 @@ angular.module('Dashboard').config(['$stateProvider', '$urlRouterProvider',
         .state('login', {
             url: '/login',
             templateUrl: 'views/login.html',
-            controller: 'MasterCtrl'
+            controller: 'LoginCtrl'
         })
         .state('sites', {
             url: '/sites',
