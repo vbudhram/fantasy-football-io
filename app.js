@@ -45,6 +45,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
+// Setup socketio
+var server = http.Server(app);
+var socketio = io(server);
+
+// Scoreboard
+var scoreboardWorker = require('./workers/scoreboardWorker')(socketio);
+
+
 if (env === 'development') {
     app.use(express.static(__dirname + '/web'));
 } else if (env === 'production' || env === 'staging') {
@@ -247,29 +255,29 @@ apiRouter.route('/:site')
     });
 
 apiRouter.route('/:site/:id')
-.delete(function (req, res) {
-    var id = req.params.id;
-    db.User.find({'email': req.user[0].email}).exec(function (err, results) {
-        var user = results[0];
-        if (err) {
-            res.send(400, err);
-        } else {
-            if (user) {
-                user.sites.id(id).remove();
-                user.save(function (err, result) {
-                    if (err) {
-                        res.send(400, err);
-                    } else {
-                        res.send(204);
-                    }
-                });
-
+    .delete(function (req, res) {
+        var id = req.params.id;
+        db.User.find({'email': req.user[0].email}).exec(function (err, results) {
+            var user = results[0];
+            if (err) {
+                res.send(400, err);
             } else {
-                res.send(400, 'Invalid request');
+                if (user) {
+                    user.sites.id(id).remove();
+                    user.save(function (err, result) {
+                        if (err) {
+                            res.send(400, err);
+                        } else {
+                            res.send(204);
+                        }
+                    });
+
+                } else {
+                    res.send(400, 'Invalid request');
+                }
             }
-        }
-    });
-})
+        });
+    })
 
 apiRouter.route('/:site/:sport')
     .get(function (req, res) {
@@ -315,6 +323,15 @@ apiRouter.route('/scoreboard/:site/:sport')
                                 var apiResult = {
                                     scoreboards: scoreboards
                                 };
+
+                                // Register boards with socketio for realtime score updates
+                                // TODO Maybe move this to a register api call
+                                scoreboardWorker.registerBoard({
+                                    user: user,
+                                    encryptionUtils: encryptionUtils,
+                                    scoreboards: scoreboards
+                                });
+
                                 res.json(apiResult);
                             });
                         }, function (err) {
@@ -330,12 +347,9 @@ apiRouter.route('/scoreboard/:site/:sport')
 
 app.use(apiRouter);
 
-// Setup socketio
-var server = http.Server(app);
-var socketio = io(server);
-socketio.on('connection', function () {
-    console.log('Connected to socket!');
-});
+//socketio.on('connection', function () {
+//    console.log('Connected to socket!');
+//});
 
 server.listen(PORT, function () {
     console.log('Server started on ' + PORT);
@@ -363,3 +377,14 @@ function updateNews() {
     });
 }
 setTimeout(updateNews, 1000);
+
+function updateScoreboards() {
+    scoreboardWorker.processBoards().then(function (data) {
+        console.log('Updated scoreboards');
+        setTimeout(updateScoreboards, 5000);
+    }, function (err) {
+        console.log('Updated scoreboards');
+        setTimeout(updateScoreboards, 5000);
+    });
+}
+setTimeout(updateScoreboards, 1000);
