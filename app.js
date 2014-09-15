@@ -255,7 +255,8 @@ apiRouter.route('/:site')
                             if (err) {
                                 res.send(400, err);
                             } else {
-                                res.json(site);
+                                // TODO This should really only return the newly created site
+                                res.json(user.sites[user.sites.length-1]);
                             }
                         });
                     }, function (err) {
@@ -358,10 +359,6 @@ apiRouter.route('/scoreboard/:site/:sport')
     });
 
 app.use(apiRouter);
-
-//socketio.on('connection', function () {
-//    console.log('Connected to socket!');
-//});
 
 server.listen(PORT, function () {
     console.log('Server started on ' + PORT);

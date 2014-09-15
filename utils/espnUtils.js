@@ -283,9 +283,12 @@
                     }
 
                     var scores = $('.score');
+                    var records = $('.record');
                     for (var i = 0; i < scores.length; i++) {
                         var score = scores[i].children[0].data;
+                        var record = records[i].children[0].data;
                         teams[i].score = score;
+                        teams[i].record = record;
                     }
 
                     try {

@@ -18,6 +18,7 @@ module.exports = function (connectionUrl) {
     var LeagueTeam = new mongoose.Schema({
         name: {type: String},
         score: {type: String},
+        record: {type: String},
         inPlay: {type: String},
         yetToPlay: {type: String},
         projected: {type: String}

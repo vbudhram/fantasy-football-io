@@ -20,7 +20,7 @@ app.controller('AccountCtrl', ['$scope', '$http', '$modal', '$log', 'SiteService
         });
 
         modalInstance.result.then(function (site) {
-            $log.info('Modal stuff happened');
+            $scope.user.sites.splice(0, 0, site);
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());
         });
