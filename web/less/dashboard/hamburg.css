@@ -1,0 +1,27 @@
+/* Hamburg Menu */
+@media only screen and (max-width: 560px) {
+  body.hamburg #page-wrapper {
+    padding-left: 0;
+  }
+  body.hamburg #page-wrapper:not(.active) #sidebar-wrapper {
+    position: absolute;
+    left: -100px;
+  }
+  body.hamburg #page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {
+    display: none;
+  }
+  body.hamburg #page-wrapper.active #sidebar-wrapper {
+    position: fixed;
+  }
+  body.hamburg #page-wrapper.active #sidebar-wrapper ul.sidebar li.sidebar-main {
+    margin-left: 0px;
+  }
+  body.hamburg #sidebar-wrapper ul.sidebar li.sidebar-main,
+  body.hamburg .row.header .meta {
+    margin-left: 70px;
+  }
+  body.hamburg #sidebar-wrapper ul.sidebar li.sidebar-main,
+  body.hamburg #page-wrapper.active #sidebar-wrapper ul.sidebar li.sidebar-main {
+    transition: margin-left 0.4s ease 0s;
+  }
+}

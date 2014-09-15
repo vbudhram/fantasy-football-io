@@ -1,0 +1,61 @@
+.title .logo {
+  height: 50px;
+  display: inline;
+  border: 1px solid;
+  border-color: lightgray;
+  border-radius: 3px;
+  padding: 3px;
+  background-color: white;
+}
+.title .status {
+  float: right;
+  margin-top: 15px;
+}
+.title .name {
+  display: inline;
+  padding: 5px;
+}
+.teamPanel {
+  min-height: 95px;
+}
+.teamPanel .highlightGreen {
+  background-color: lightgreen;
+  /*Transition*/
+  -webkit-transition: background-color 3s ease;
+  -moz-transition: background-color 3s ease;
+  -o-transition: background-color 3s ease;
+  transition: background-color 3s ease;
+}
+.teamPanel .highlightRed {
+  background-color: lightsalmon;
+  /*Transition*/
+  -webkit-transition: background-color 3s ease;
+  -moz-transition: background-color 3s ease;
+  -o-transition: background-color 3s ease;
+  transition: background-color 3s ease;
+}
+.teamPanel .toppanel {
+  margin-top: 10px;
+}
+.teamPanel .toppanel .teamName {
+  display: inline;
+  text-align: left;
+}
+.teamPanel .toppanel .record {
+  display: inline;
+  text-align: left;
+}
+.teamPanel .toppanel .score {
+  margin-top: 0px;
+  display: inline;
+  text-align: right;
+}
+.teamPanel .inPlay {
+  text-align: left;
+}
+.teamPanel .yetPlay {
+  text-align: left;
+}
+.teamPanel .projectedScore {
+  text-align: right;
+}
