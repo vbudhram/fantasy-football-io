@@ -99,15 +99,10 @@ app.service('SiteService', function ($http, $q) {
      * @returns {string}
      */
     this.getSiteImage = function (siteName) {
-        switch (siteName) {
-            case 'espn':
-            {
-                return 'https://lh4.googleusercontent.com/-yOoKXdob9y8/AAAAAAAAAAI/AAAAAAACB5c/Dd157Do4vBs/s120-c/photo.jpg';
-            }
-            default:
-            {
-                return '';
-            }
+        if(siteName.indexOf('espn') > -1){
+            return 'https://lh4.googleusercontent.com/-yOoKXdob9y8/AAAAAAAAAAI/AAAAAAACB5c/Dd157Do4vBs/s120-c/photo.jpg';
+        }else{
+            return '';
         }
     };
 });

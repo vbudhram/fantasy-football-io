@@ -16,4 +16,8 @@ app.controller('SiteCtrl', ['$scope', '$http', 'SiteService', function ($scope, 
         $scope.loading = false;
         $scope.teams = [];
     });
+
+    $scope.getImageSrc = function(teamUrl){
+        return SiteService.getSiteImage(teamUrl);
+    };
 }]);

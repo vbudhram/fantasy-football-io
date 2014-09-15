@@ -1,38 +1,105 @@
 <div ng-controller="SiteCtrl">
-    <div class="col-lg-2 teamPanel" ng-repeat="team in teams">
+    <!--<div class="col-xs-12 teamPanel" ng-repeat="team in teams">-->
+    <!--<div class="widget">-->
+    <!--<div class="widget-body no-padding">-->
+    <!--<div class="vmiddle">-->
+    <!--<img height="100px" width="100px" src="{{team.teamImageUrl}}"/>-->
+    <!--</div>-->
+
+    <!--<div class="vmiddle">-->
+    <!--<h6>{{team.name}} : {{team.active}}</h6>-->
+    <!--</div>-->
+
+    <!--<table class="table">-->
+    <!--<thead>-->
+    <!--<tr>-->
+    <!--<th>Slot</th>-->
+    <!--<th>Player</th>-->
+    <!--<th>Opp.</th>-->
+    <!--</tr>-->
+    <!--</thead>-->
+    <!--<tbody>-->
+
+    <!--<tr ng-repeat="player in team.players">-->
+    <!--<td>-->
+    <!--{{player.position}}-->
+    <!--</td>-->
+    <!--<td>-->
+    <!--{{player.playerName}}-->
+    <!--</td>-->
+    <!--<td>-->
+    <!--{{player.opponent}}-->
+    <!--</td>-->
+    <!--</tr>-->
+    <!--</tbody>-->
+    <!--</table>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <div class="teamSection" ng-repeat="team in teams">
         <div class="widget">
+            <div class="widget-title">
+                <h5>{{team.name}}</h5>
+            </div>
             <div class="widget-body no-padding">
-                <div class="vmiddle">
-                    <img height="100px" width="100px" src="{{team.teamImageUrl}}"/>
+                <div class="row teamInfoPanel">
+                    <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5 imageContainer">
+                        <img class="img-responsive logo" src="{{team.teamImageUrl}}"/>
+                        <img height="50px" ng-src="{{getImageSrc(team.teamUrl)}}"/>
+                    </div>
+                    <div class="col-lg-11 col-md-10 col-sm-9 col-xs-7 details">
+                        <div class="topText">
+                            <h3 class="name">{{team.name}}</h3>
+                            <h3 class="record pull-right">{{team.record}}</h3>
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="bottomText">
+                            <h4 class="leagueName">{{team.leagueName}}</h4>
+                            <h4 class="rank pull-right">{{team.rank}}</h4>
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="playerTable">
+                            <a class="showPlayers"
+                               ng-click="team.enablePlayerTable ? (team.enablePlayerTable=false) : (team.enablePlayerTable=true)">
+                                Player Details
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+
+                            <a class="showTransactions">
+                                Recent Transactions
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+
+                            <table class="table" ng-if="team.enablePlayerTable">
+                                <thead>
+                                <tr>
+                                    <th>Slot</th>
+                                    <th>Player</th>
+                                    <th>Opp.</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <tr ng-repeat="player in team.players">
+                                    <td>
+                                        {{player.position}}
+                                    </td>
+                                    <td>
+                                        {{player.playerName}}
+                                    </td>
+                                    <td>
+                                        {{player.opponent}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
-
-                <div class="vmiddle">
-                    <h6>{{team.name}} : {{team.active}}</h6>
-                </div>
-
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Slot</th>
-                        <th>Player</th>
-                        <th>Opp.</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-
-                    <tr ng-repeat="player in team.players">
-                        <td>
-                            {{player.position}}
-                        </td>
-                        <td>
-                            {{player.playerName}}
-                        </td>
-                        <td>
-                            {{player.opponent}}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
