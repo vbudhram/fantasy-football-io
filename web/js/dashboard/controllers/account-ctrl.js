@@ -8,6 +8,7 @@ app.controller('AccountCtrl', ['$scope', '$http', '$modal', '$log', 'SiteService
     $http({method: 'get', url: '/users'}).
         success(function (data, status) {
             $scope.user = data;
+            updateTotalTeams();
         }).
         error(function (data, status) {
             console.log(data);
@@ -21,6 +22,7 @@ app.controller('AccountCtrl', ['$scope', '$http', '$modal', '$log', 'SiteService
 
         modalInstance.result.then(function (site) {
             $scope.user.sites.splice(0, 0, site);
+            updateTotalTeams();
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());
         });
@@ -29,6 +31,7 @@ app.controller('AccountCtrl', ['$scope', '$http', '$modal', '$log', 'SiteService
     $scope.removeSite = function (index) {
         SiteService.removeSite($scope.user.sites[index]).then(function (result) {
             $scope.user.sites.splice(index, 1);
+            updateTotalTeams();
         }, function (err) {
             $log.error(err);
         });
@@ -37,6 +40,17 @@ app.controller('AccountCtrl', ['$scope', '$http', '$modal', '$log', 'SiteService
     $scope.getImageSrc = function (name) {
         return SiteService.getSiteImage(name);
     };
+
+    function updateTotalTeams(){
+        var count = 0;
+        $scope.user.sites.forEach(function(site){
+            site.sports.forEach(function(sport){
+                count = sport.teams.length + count;
+            });
+        });
+
+        $scope.totalTeams = count;
+    }
 }]);
 
 var ModalInstanceCtrl = function ($scope, $http, $modalInstance, SiteService) {
@@ -45,7 +59,7 @@ var ModalInstanceCtrl = function ($scope, $http, $modalInstance, SiteService) {
     $scope.siteOptions = SiteService.getSiteOptions();
 
     $scope.ok = function () {
-        if (this.addSiteForm.$valid) {
+        if (this.addSiteForm.$valid && this.selectedSite) {
             $scope.loading = true;
             SiteService.addSite(this.selectedSite.name, this.site.email, this.site.password).then(function (value) {
                 $scope.loading = false;
