@@ -15,7 +15,7 @@ app.controller('AccountCtrl', ['$scope', '$http', '$modal', '$log', 'SiteService
 
     $scope.addSite = function () {
         var modalInstance = $modal.open({
-            templateUrl: 'myModalContent.html',
+            templateUrl: 'addSiteModal.html',
             controller: ModalInstanceCtrl
         });
 
@@ -33,6 +33,10 @@ app.controller('AccountCtrl', ['$scope', '$http', '$modal', '$log', 'SiteService
             $log.error(err);
         });
     };
+
+    $scope.getImageSrc = function (name) {
+        return SiteService.getSiteImage(name);
+    };
 }]);
 
 var ModalInstanceCtrl = function ($scope, $http, $modalInstance, SiteService) {
@@ -43,7 +47,7 @@ var ModalInstanceCtrl = function ($scope, $http, $modalInstance, SiteService) {
     $scope.ok = function () {
         if (this.addSiteForm.$valid) {
             $scope.loading = true;
-            SiteService.addSite(this.site.name.name, this.site.email, this.site.password).then(function (value) {
+            SiteService.addSite(this.selectedSite.name, this.site.email, this.site.password).then(function (value) {
                 $scope.loading = false;
                 $modalInstance.close(value);
             }, function (error) {
@@ -57,5 +61,14 @@ var ModalInstanceCtrl = function ($scope, $http, $modalInstance, SiteService) {
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
+    };
+
+    $scope.getImageSrc = function (name) {
+        return SiteService.getSiteImage(name);
+    };
+
+    $scope.selectSite = function (site) {
+        console.log('Selected site ' + site.name);
+        $scope.selectedSite = site;
     };
 };

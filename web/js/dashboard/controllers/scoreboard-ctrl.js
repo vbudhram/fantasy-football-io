@@ -1,7 +1,7 @@
 /**
  * Created by vbudhram on 9/8/14.
  */
-app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5', function ($scope, $http, ScoreboardService, md5) {
+app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5', 'SiteService', function ($scope, $http, ScoreboardService, md5, SiteService) {
 
     $scope.loading = false;
     $scope.sockets = [];
@@ -58,9 +58,9 @@ app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5',
         });
 
         // Remove hightlights after 1.5 seconds
-        setTimeout(function(){
+        setTimeout(function () {
             console.log('Removing highlights');
-            for(var i=0;i<$scope.scoreboards.length;i++){
+            for (var i = 0; i < $scope.scoreboards.length; i++) {
                 var scoreboard = $scope.scoreboards[i];
                 for (var j = 0; j < scoreboard.games.length; j++) {
                     var newGame = scoreboard.games[j];
@@ -88,15 +88,6 @@ app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5',
     };
 
     $scope.getImageSrc = function (scoreboard) {
-        switch (scoreboard.site) {
-            case 'espn':
-            {
-                return 'https://lh4.googleusercontent.com/-yOoKXdob9y8/AAAAAAAAAAI/AAAAAAACB5c/Dd157Do4vBs/s120-c/photo.jpg';
-            }
-            default:
-            {
-                return '';
-            }
-        }
+        return SiteService.getSiteImage(scoreboard.site);
     };
 }]);

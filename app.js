@@ -61,7 +61,7 @@ app.use(passport.session());
 var server = http.Server(app);
 var socketio = io(server);
 
-// Scoreboard
+// Workers
 var scoreboardWorker = require('./workers/scoreboardWorker')(socketio);
 
 

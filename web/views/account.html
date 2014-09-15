@@ -36,7 +36,8 @@
                     <tbody>
                     <tr ng-repeat="site in user.sites">
                         <td class="text-center vmiddle">
-                            <h1>{{site.name}}</h1>
+                            <!--<h1>{{site.name}}</h1>-->
+                            <img height="50px" ng-src="{{getImageSrc(site.name)}}"/>
                         </td>
                         <td>
                             <div ng-repeat="sport in site.sports">
@@ -78,12 +79,23 @@
         </div>
     </div>
 
-    <script type="text/ng-template" id="myModalContent.html">
+    <script type="text/ng-template" id="addSiteModal.html">
         <form name="addSiteForm">
             <div class="modal-header">
-                <h3 class="modal-title">Add Site</h3>
+                <h4 class="modal-title">Add Site</h4>
             </div>
             <div class="modal-body" ng-disable="loading">
+
+                <div class="input-group">
+                    <div class="row">
+                        <div class="col-xs-3" ng-repeat="site in siteOptions">
+                            <a class="siteOption" ng-click="selectSite(site)">
+                                <img height="50px" ng-src="{{getImageSrc(site.name)}}" ng-class="{'selectedSite' : (selectedSite.name === site.name)}"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <div style="margin-bottom: 25px" class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                     <input name="site-username" type="text" class="form-control" name="email" ng-model="site.email"
@@ -96,11 +108,7 @@
                            placeholder="Password" ng-model="site.password" required>
                 </div>
 
-                <div style="margin-bottom: 25px" class="input-group">
-                    <label>Site</label>
-                    <select name='site-name' ng-model="site.name" ng-options="site.name for site in siteOptions" required>
-                    </select>
-                </div>
+
                 <div class="message error">
                     {{error}}
                 </div>

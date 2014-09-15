@@ -92,4 +92,22 @@ app.service('SiteService', function ($http, $q) {
 
         return deferred.promise;
     };
+
+    /**
+     * Returns the image url for the site
+     * @param siteName
+     * @returns {string}
+     */
+    this.getSiteImage = function (siteName) {
+        switch (siteName) {
+            case 'espn':
+            {
+                return 'https://lh4.googleusercontent.com/-yOoKXdob9y8/AAAAAAAAAAI/AAAAAAACB5c/Dd157Do4vBs/s120-c/photo.jpg';
+            }
+            default:
+            {
+                return '';
+            }
+        }
+    };
 });
