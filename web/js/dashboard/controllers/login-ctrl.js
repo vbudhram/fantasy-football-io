@@ -1,6 +1,7 @@
 /**
  * Created by vbudhram on 9/13/14.
  */
+'use strict';
 app.controller('LoginCtrl', ['$scope', '$location', 'UserService', '$rootScope', function ($scope, $location, UserService, $rootScope) {
 
     $scope.init = function init(){

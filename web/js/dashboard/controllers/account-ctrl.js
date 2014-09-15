@@ -48,7 +48,6 @@ app.controller('AccountCtrl', ['$scope', '$http', '$modal', '$log', 'SiteService
                 count = sport.teams.length + count;
             });
         });
-
         $scope.totalTeams = count;
     }
 }]);

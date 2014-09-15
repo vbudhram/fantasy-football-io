@@ -4,6 +4,7 @@
 
 'use strict';
 app.controller('MasterCtrl', ['$scope', '$http', '$rootScope', 'cfpLoadingBar', '$location', '$cookieStore', '$window', 'UserService', function ($scope, $http, $rootScope, cfpLoadingBar, $location, $cookieStore, $window, UserService) {
+
     /**
      * Sidebar Toggle & Cookie Control
      *
@@ -53,6 +54,21 @@ app.controller('MasterCtrl', ['$scope', '$http', '$rootScope', 'cfpLoadingBar', 
 
     $scope.$on('logout', function(event, args){
        $scope.user = undefined;
+    });
+
+    $scope.$on("$locationChangeStart", function(event, next, current) {
+        console.log("location changing to:" + next);
+        var title = 'Fantasy Ally';
+
+        if(next.indexOf('/scoreboards') > -1){
+            title = 'Scoreboards';
+        }else if(next.indexOf('/sites') > -1){
+            title = 'Teams';
+        }else if(next.indexOf('/account') > -1){
+            title = 'Account';
+        }
+
+        $scope.title = title;
     });
 
     $scope.logout = function logout() {
