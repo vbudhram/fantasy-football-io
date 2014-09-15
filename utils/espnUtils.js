@@ -80,80 +80,85 @@
             if (err) {
                 getTeamQ.reject(err);
             } else {
-                var $ = cheerio.load(body);
+                try {
+                    var $ = cheerio.load(body);
 
-                var nameTokens = $('h3').filter('.team-name');
-                if (nameTokens.length < 1) {
-                    getTeamQ.reject(new Error('Unsupported team url : ' + teamUrl));
-                } else {
-                    // Scrape team player information
-                    var players = [];
-                    var playerCells = $('.pncPlayerRow');
-                    var active = false;
-                    for (var i = 0; i < playerCells.length; i++) {
-                        try {
-                            var cell = playerCells[i];
+                    var nameTokens = $('h3').filter('.team-name');
+                    if (nameTokens.length < 1) {
+                        getTeamQ.reject(new Error('Unsupported team url : ' + teamUrl));
+                    } else {
+                        // Scrape team player information
+                        var players = [];
+                        var playerCells = $('.pncPlayerRow');
+                        var active = false;
+                        for (var i = 0; i < playerCells.length; i++) {
+                            try {
+                                var cell = playerCells[i];
 
-                            // Don't add empty players
-                            if (cell.children[1].children[0].children === undefined) {
-                                continue;
+                                // Don't add empty players
+                                if (cell.children[1].children[0].children === undefined) {
+                                    continue;
+                                }
+
+                                var playerName = cell.children[1].children[0].children[0].data;
+                                var position = cell.children[0].children[0].data;
+                                var playerTeamName = cell.children[1].children[1].data.replace(',', "").trim();
+
+                                if (teamUrl.indexOf('2014') > -1) {
+                                    // TODO Figure this out later, not sure how to handle current year, point and rankings
+                                    var slot = cell.children[0].children[0].data;
+                                    var opponent = cell.children[4].children[0].children[0].children[0].data;
+                                    var player = {
+                                        position: position,
+                                        playerName: playerName,
+                                        playerTeamName: playerTeamName,
+                                        opponent: opponent
+                                    };
+
+                                    players.push(player);
+                                    active = true;
+                                } else {
+                                    // ESPN has different layouts for previous years
+                                    var positionRank = cell.children[3].children[0].data;
+                                    var totalPoints = cell.children[4].children[0].data;
+                                    var averagePoints = cell.children[5].children[0].data;
+                                    players.push(new Player(playerName, playerTeamName, position, positionRank, totalPoints, averagePoints));
+                                }
+                            } catch (err) {
+                                console.log('Failed parsing player : ' + playerName);
+                                console.log(err.stack);
                             }
-
-                            var playerName = cell.children[1].children[0].children[0].data;
-                            var position = cell.children[0].children[0].data;
-                            var playerTeamName = cell.children[1].children[1].data.replace(',', "").trim();
-
-                            if (teamUrl.indexOf('2014') > -1) {
-                                // TODO Figure this out later, not sure how to handle current year, point and rankings
-                                var slot = cell.children[0].children[0].data;
-                                var opponent = cell.children[4].children[0].children[0].children[0].data;
-                                var player = {
-                                    position: position,
-                                    playerName: playerName,
-                                    playerTeamName: playerTeamName,
-                                    opponent: opponent
-                                };
-
-                                players.push(player);
-                                active = true;
-                            } else {
-                                // ESPN has different layouts for previous years
-                                var positionRank = cell.children[3].children[0].data;
-                                var totalPoints = cell.children[4].children[0].data;
-                                var averagePoints = cell.children[5].children[0].data;
-                                players.push(new Player(playerName, playerTeamName, position, positionRank, totalPoints, averagePoints));
-                            }
-                        }catch(err){
-                            console.log('Failed parsing player : ' + playerName);
-                            console.log(err.stack);
                         }
+                        // Scrape team information
+                        var teamName = nameTokens[0].children[0].data.trim();
+                        var shortName = nameTokens[0].children[1].children[0].data;
+                        shortName = (shortName ? shortName : '').replace('(', '').replace(')', '');
+                        var record = $('.games-univ-mod4')[0].children[0].children[1].data.trim();
+                        var rank = $('.games-univ-mod4')[0].children[0].children[2].children[0].data.replace('(', '').replace(')', '');
+                        var teamImageUrl = $('#content > div:nth-child(1) > div.gamesmain.container > div > div > div:nth-child(3) > div.games-topcol.games-topcol-expand > div.games-univ-mod1 > a > img')[0].attribs.src;
+                        var leagueName = $('#content > div:nth-child(1) > div.gamesmain.container > div > div > div:nth-child(3) > div.games-topcol.games-topcol-expand > div:nth-child(2) > div.games-univ-mod3 > ul:nth-child(2) > li > a > strong')[0].children[0].data;
+
+                        var tokens = teamUrl.replace('clubhouse', 'scoreboard').split('&');
+                        var scoreboardUrl = tokens[0] + '&' + tokens[2];
+                        console.log('Resolving team data for ' + teamUrl);
+
+                        var team = {
+                            active: active,
+                            name: teamName,
+                            shortName: shortName,
+                            record: record,
+                            rank: rank,
+                            teamUrl: teamUrl,
+                            teamImageUrl: teamImageUrl,
+                            leagueName: leagueName,
+                            leagueScoreboardUrl: scoreboardUrl,
+                            players: players
+                        };
+
+                        getTeamQ.resolve(team);
                     }
-
-                    // Scrape team information
-                    var teamName = nameTokens[0].children[0].data.trim();
-                    var shortName = nameTokens[0].children[1].children[0].data;
-                    shortName = (shortName ? shortName : '').replace('(', '').replace(')', '');
-                    var record = $('.games-univ-mod4')[0].children[0].children[1].data.trim();
-                    var rank = $('.games-univ-mod4')[0].children[0].children[2].children[0].data.replace('(', '').replace(')', '');
-                    var teamImageUrl = $('#content > div:nth-child(1) > div.gamesmain.container > div > div > div:nth-child(3) > div.games-topcol.games-topcol-expand > div.games-univ-mod1 > a > img')[0].attribs.src;
-                    var leagueName = $('#content > div:nth-child(1) > div.gamesmain.container > div > div > div:nth-child(3) > div.games-topcol.games-topcol-expand > div:nth-child(2) > div.games-univ-mod3 > ul:nth-child(2) > li > a > strong')[0].children[0].data;
-                    var scoreboardUrl = teamUrl.replace('clubhouse', 'scoreboard');
-                    console.log('Resolving team data for ' + teamUrl);
-
-                    var team = {
-                        active: active,
-                        name: teamName,
-                        shortName: shortName,
-                        record: record,
-                        rank: rank,
-                        teamUrl: teamUrl,
-                        teamImageUrl: teamImageUrl,
-                        leagueName: leagueName,
-                        leagueScoreboardUrl: scoreboardUrl,
-                        players: players
-                    };
-
-                    getTeamQ.resolve(team);
+                } catch (err) {
+                    getTeamQ.reject(err);
                 }
             }
         });
@@ -228,8 +233,8 @@
             }
 
             q.allSettled(defers).done(function (results) {
-                results.forEach(function(result){
-                    if(result.state === 'fulfilled'){
+                results.forEach(function (result) {
+                    if (result.state === 'fulfilled') {
                         scoreboards = scoreboards.concat(result.value);
                     }
                 });
@@ -283,7 +288,7 @@
                         teams[i].score = score;
                     }
 
-                    try{
+                    try {
                         var plays = $('.playersPlayed');
                         for (var i = 0; i < plays.length; i++) {
                             var ytp = plays[i].children[0].children[0].data;
@@ -293,7 +298,7 @@
                             teams[i].inPlay = ip;
                             teams[i].projected = proj;
                         }
-                    }catch(e){
+                    } catch (e) {
                         console.log(e);
                     }
 

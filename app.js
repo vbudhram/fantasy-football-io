@@ -11,16 +11,28 @@ var APP_NAME = 'fantasy-football-io';
 var DB_URL = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'localhost:27017/fantasy-football';
 var env = process.env.NODE_ENV || 'development';
 var salt = process.env.SALT || 'badSalt';
+var sessionSecret = process.env.SECRET || 'keyboardcat';
+var redisSessionHost = process.env.REDIS_SESSION_HOST || 'localhost';
+var redisSessionPort = process.env.REDIS_SESSION_PORT || 6379;
+var redisSessionPass = process.env.REDIS_SESSION_PASS;
 
 // Required middleware
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
-var session = require('express-session');
 var flash = require('connect-flash');
 var io = require('socket.io');
 var http = require('http');
+
+// Configure Session
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+var redisStore = new RedisStore({
+    host: redisSessionHost,
+    port: redisSessionPort,
+    pass: redisSessionPass
+});
 
 // Database and models import
 var db = require('./database/db')(DB_URL);
@@ -34,16 +46,16 @@ var espnUtils = require('./utils/espnUtils');
 var newsUtils = require('./utils/newsUtils');
 var validationRules = require('./utils/validationUtils');
 
+// Configure app
 var app = express();
-
 app.use(morgan('combined'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.use(session({secret: 'keyboard cat'}));
+app.use(flash());
+app.use(session({store: redisStore,secret: sessionSecret}));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(flash());
 
 // Setup socketio
 var server = http.Server(app);

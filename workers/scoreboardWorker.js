@@ -27,7 +27,9 @@ module.exports = function (socketio) {
 
             ESPNUtils.login(encryptionUtils.decrypt(site.username), encryptionUtils.decrypt(site.password)).then(function (data) {
                 ESPNUtils.getScoreboard(scoreboard.url, data.cookieJar).then(function (newScoreboard) {
-//                    newScoreboard.games[3].awayTeam[0].score = parseFloat(newScoreboard.games[0].awayTeam[0].score) + Math.random() * 100;
+//                    newScoreboard.games[3].awayTeam[0].score = parseFloat(newScoreboard.games[0].awayTeam[0].score) + Math.abs(Math.random() * 100);
+//                    newScoreboard.games[4].awayTeam[0].score = parseFloat(newScoreboard.games[0].awayTeam[0].score) - Math.abs(Math.random() * 100);
+
                     console.log('Emitting scoreboard, ' + scoreboard.url + ', to ' + room.sockets.length);
                     room.emit('scoreboardUpdate', newScoreboard);
                 }, function (err) {

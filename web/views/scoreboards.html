@@ -16,7 +16,7 @@
             <!--<div class="title">{{team.name}}</div>-->
             <!--</div>-->
             <div class="widget" ng-repeat="team in game.awayTeam">
-                <div class="widget-body no-padding teamPanel">
+                <div class="widget-body no-padding teamPanel" ng-class="{highlightGreen: team.scoreState === 'increase', highlightRed: team.scoreState === 'decrease'}">
                     <div class="row">
                         <h4 class="col-xs-9 teamName">{{team.name}}</h4>
                         <h4 class="col-xs-3 score">{{team.score}}</h4>
@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="widget" ng-repeat="team in game.homeTeam">
-                <div class="widget-body no-padding teamPanel">
+                <div class="widget-body no-padding teamPanel" ng-class="{highlightGreen: team.scoreState === 'increase', highlightRed: team.scoreState === 'decrease'}">
                     <div class="row">
                         <h4 class="col-xs-9 teamName">{{team.name}}</h4>
                         <h4 class="col-xs-3 score">{{team.score}}</h4>
