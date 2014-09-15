@@ -317,6 +317,8 @@
                     var scoreboardName = $('#content > div:nth-child(1) > div.gamesmain.container > div > div > div.games-fullcol.games-fullcol-extramargin > div.games-pageheader > div:nth-child(2) > h1')[0].children[0].data;
                     var scoreboard = {
                         name: scoreboardName,
+                        type: 'football',
+                        site: 'espn',
                         url: url,
                         games: games
                     };

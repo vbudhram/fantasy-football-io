@@ -30,6 +30,8 @@ module.exports = function (connectionUrl) {
 
     var LeagueScoreboard = new mongoose.Schema({
         name: {type: String},
+        type: {type: String},
+        site: {type: String},
         url: {type: String, unique: true},
         games: [LeagueMatchup]
     });

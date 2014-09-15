@@ -32,6 +32,30 @@ app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5',
                 newHomeTeam.scoreState = 'normal';
             }
         }
+    }
+
+    function registerSocket(scoreboards) {
+        scoreboards.forEach(function (scoreboard) {
+            var roomName = md5.createHash(scoreboard.url);
+            var socket = io('/' + roomName);
+
+            socket.on('connection', function (data) {
+                console.log('client connected!');
+            });
+
+            socket.on('scoreboardUpdate', function (data) {
+                for (var i = 0; i < $scope.scoreboards.length; i++) {
+                    var scoreboard = $scope.scoreboards[i];
+                    if (scoreboard.url === data.url) {
+                        var oldScoreboard = $scope.scoreboards[i];
+                        $scope.scoreboards[i] = data;
+                        applyHighlights(oldScoreboard, data);
+                    }
+                }
+            });
+
+            $scope.sockets.push(socket);
+        });
 
         // Remove hightlights after 1.5 seconds
         setTimeout(function(){
@@ -50,33 +74,6 @@ app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5',
         }, 1500);
     }
 
-    function registerSocket(scoreboards) {
-        scoreboards.forEach(function (scoreboard) {
-            var roomName = md5.createHash(scoreboard.url);
-            var socket = io('/' + roomName);
-
-            socket.on('connection', function (data) {
-                console.log('client connected!');
-            });
-
-            socket.on('scoreboardUpdate', function (data) {
-                console.log('Scoreboard room : ' + data.url);
-                for (var i = 0; i < $scope.scoreboards.length; i++) {
-                    var scoreboard = $scope.scoreboards[i];
-                    if (scoreboard.url === data.url) {
-                        var oldScoreboard = $scope.scoreboards[i];
-                        $scope.scoreboards[i] = data;
-                        applyHighlights(oldScoreboard, data);
-                    }
-                }
-
-                $scope.$apply();
-            });
-
-            $scope.sockets.push(socket);
-        });
-    }
-
     $scope.getScoreboards = function () {
         console.log('Getting scoreboards');
         $scope.loading = true;
@@ -88,5 +85,18 @@ app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5',
             $scope.loading = false;
             $scope.error = err;
         });
+    };
+
+    $scope.getImageSrc = function (scoreboard) {
+        switch (scoreboard.site) {
+            case 'espn':
+            {
+                return 'https://lh4.googleusercontent.com/-yOoKXdob9y8/AAAAAAAAAAI/AAAAAAACB5c/Dd157Do4vBs/s120-c/photo.jpg';
+            }
+            default:
+            {
+                return '';
+            }
+        }
     };
 }]);

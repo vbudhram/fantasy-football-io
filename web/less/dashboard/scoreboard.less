@@ -1,13 +1,27 @@
 .title {
+  .logo {
+    height: 50px;
+    display: inline;
+    border: 1px solid;
+    border-color: lightgray;
+    border-radius: 3px;
+    padding: 3px;
+    background-color: white;
+  }
+
   .status {
-    .connected{
+    .connected {
       background: green;
     }
 
-    .disconnected{
+    .disconnected {
       background: #ff0000;
     }
+  }
 
+  .name{
+    display: inline;
+    padding: 5px;
   }
 }
 
@@ -15,7 +29,7 @@
 
   min-height: 95px;
 
-  .highlightGreen{
+  .highlightGreen {
     background-color: lightgreen;
     /*Transition*/
     -webkit-transition: background-color 3s ease;
@@ -24,7 +38,7 @@
     transition: background-color 3s ease;
   }
 
-  .highlightRed{
+  .highlightRed {
     background-color: lightsalmon;
     /*Transition*/
     -webkit-transition: background-color 3s ease;

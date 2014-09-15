@@ -4,10 +4,15 @@
 
         <div class="widget">
             <div class="widget-title title">
-                <h5 class="name">{{scoreboard.name}}
-                    <i ng-if="sockets[$index].connected" class="fa fa-circle text-success pull-right"></i>
-                    <i ng-if="!sockets[$index].connected" class="fa fa-circle text-danger pull-right"></i>
-                </h5>
+                <div class="row">
+                    <img class="logo" ng-src="{{getImageSrc(scoreboard)}}"/>
+
+                    <h5 class="name">{{scoreboard.name}}
+                        <!--<div ng-if="sockets[$index].connected" class="fa fa-circle text-success pull-right"></div>-->
+                        <!--<div ng-if="!sockets[$index].connected" class="fa fa-circle text-danger pull-right"></div>-->
+                    </h5>
+                </div>
+
             </div>
         </div>
         <div ng-repeat="game in scoreboard.games">

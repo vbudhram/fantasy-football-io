@@ -41,28 +41,6 @@ module.exports = function (socketio) {
                 console.log('Error processing scoreboard : ' + site.url);
                 delete scoreboards[key];
             });
-
-
-//            var scoreboard = board.scoreboard;
-//            var room = board.room;
-
-//            ESPNUtils.getScoreboards(user, encryptionUtils).then(function (scoreboards) {
-//                scoreboards.forEach(function (scoreboard) {
-//                    rooms[scoreboard.url].emit('scoreboardUpdate', scoreboard);
-//                });
-//            }, function (err) {
-//                console.log(err);
-//            });
-
-//            ESPNUtils.login(encryptionUtils.decrypt(user.email), encryptionUtils.decrypt(user.password)).then(function(data){
-//                ESPNUtils.getScoreboard(scoreboard.url, data.cookieJar).then(function(newScoreboard){
-//                    room.emit('scoreboardUpdate', newScoreboard);
-//                }, function(err){
-//                    console.log(err);
-//                });
-//            }, function(err){
-//                console.log(err);
-//            });
         });
 
         setTimeout(function () {
@@ -78,7 +56,6 @@ module.exports = function (socketio) {
         var encryptionUtils = data.encryptionUtils;
 
         user.sites.forEach(function (site) {
-
             site.sports[0].teams.forEach(function (team) {
                 var scoreboardUrl = team.leagueScoreboardUrl;
                 if (scoreboards[scoreboardUrl] === undefined) {
