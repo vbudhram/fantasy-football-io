@@ -4,11 +4,15 @@
 
         <div class="widget">
             <div class="widget-title title">
-                    <img class="logo" ng-src="{{getImageSrc(scoreboard)}}"/>
-                    <h5 class="name">{{scoreboard.name}}
-                    <i ng-if="sockets[$index].connected" class="fa fa-circle text-success"></i>
-                    <i ng-if="!sockets[$index].connected" class="fa fa-circle text-danger"></i>
-                    </h5>
+                    <div class="row">
+                        <img class="logo" ng-src="{{getImageSrc(scoreboard)}}"/>
+                        <h5 class="name">{{scoreboard.name}}
+
+                        </h5>
+                        <i ng-if="sockets[$index].connected" class="fa fa-circle text-success status"></i>
+                        <i ng-if="!sockets[$index].connected" class="fa fa-circle text-danger status"></i>
+                    </div>
+
                     <div class="clearfix"></div>
             </div>
             <div class="clearfix"></div>
