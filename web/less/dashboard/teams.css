@@ -1,0 +1,43 @@
+.teamSection {
+  padding: 15px;
+}
+.teamSection .teamInfoPanel {
+  padding-top: 10px;
+}
+.teamSection .teamInfoPanel .imageContainer {
+  display: inline;
+}
+.teamSection .teamInfoPanel .imageContainer .logo {
+  height: 100px;
+  width: 100px;
+}
+.teamSection .teamInfoPanel .details {
+  display: inline;
+}
+.teamSection .teamInfoPanel .details .topText {
+  margin-top: 10px;
+}
+.teamSection .teamInfoPanel .details .topText .name {
+  display: inline;
+}
+.teamSection .teamInfoPanel .details .topText .record {
+  display: inline;
+  margin: auto;
+}
+.teamSection .teamInfoPanel .details .bottomText {
+  margin-top: 10px;
+}
+.teamSection .teamInfoPanel .details .bottomText .leagueName {
+  display: inline;
+}
+.teamSection .teamInfoPanel .details .bottomText .rank {
+  display: inline;
+  margin: auto;
+}
+.teamSection .teamInfoPanel .details .playerTable {
+  margin-top: 10px;
+}
+.teamSection .teamInfoPanel .details .playerTable .showPlayers {
+  cursor: pointer;
+  padding-right: 10px;
+}
