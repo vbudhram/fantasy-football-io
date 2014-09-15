@@ -1,5 +1,11 @@
 {
+  "name": "Fantasy Ally",
   "version": "0.0.1",
+  "authors": [
+    "Vijay Budhram <vbudhram@gmail.com>"
+  ],
+  "description": "AngularJS + Bootstrap Responsive Dashboard",
+  "main": "index.html",
   "license": "MIT",
   "ignore": [
     "**/.*",
