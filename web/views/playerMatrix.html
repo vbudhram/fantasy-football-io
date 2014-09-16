@@ -1,0 +1,43 @@
+<div ng-controller="PlayerMatrixCtrl">
+    <div class="col-lg-12">
+        <div class="widget">
+            <div class="widget-title">
+                <i class="fa fa-users"></i> Player Matrix
+                <input type="text" placeholder="Search" class="form-control input-sm pull-right" ng-model="search"/>
+
+                <div class="clearfix"></div>
+            </div>
+            <div class="widget-body no-padding">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th class="text-left">Player</th>
+                        <th class="text-left">Position</th>
+                        <th class="text-left">League Count</th>
+                        <th class="text-left">News</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr ng-repeat="player in players">
+                        <td class="text-left vmiddle">
+                            {{player.playerInfo.playerName}}
+                        </td>
+                        <td class="text-left vmiddle">
+                            {{player.playerInfo.position}}
+                        </td>
+                        <td class="text-left vmiddle">
+                            <h6 ng-repeat="team in player.playerTeam">{{team.name}}</h6>
+                        </td>
+                        <td class="text-left vmiddle">
+                            <h6>Latest news about {{player.playerInfo.playerName}}</h6>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+</div>

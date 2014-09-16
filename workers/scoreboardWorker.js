@@ -25,22 +25,28 @@ module.exports = function (socketio) {
             var encryptionUtils = scoreboard.encryptionUtils;
             var room = scoreboard.room;
 
-            ESPNUtils.login(encryptionUtils.decrypt(site.username), encryptionUtils.decrypt(site.password)).then(function (data) {
-                ESPNUtils.getScoreboard(scoreboard.url, data.cookieJar).then(function (newScoreboard) {
+            if(room.sockets.length > 0){
+                ESPNUtils.login(encryptionUtils.decrypt(site.username), encryptionUtils.decrypt(site.password)).then(function (data) {
+                    ESPNUtils.getScoreboard(scoreboard.url, data.cookieJar).then(function (newScoreboard) {
 //                    newScoreboard.games[3].awayTeam[0].score = parseFloat(newScoreboard.games[0].awayTeam[0].score) + Math.abs(Math.random() * 100);
 //                    newScoreboard.games[4].awayTeam[0].score = parseFloat(newScoreboard.games[0].awayTeam[0].score) - Math.abs(Math.random() * 100);
 
-                    console.log('Emitting scoreboard, ' + scoreboard.url + ', to ' + room.sockets.length);
-                    room.emit('scoreboardUpdate', newScoreboard);
+                        console.log('Emitting scoreboard, ' + scoreboard.url + ', to ' + room.sockets.length);
+                        room.emit('scoreboardUpdate', newScoreboard);
+                    }, function (err) {
+                        // If error processing board, close socket and remove from keys
+                        console.log('Error processing scoreboard : ' + site.url);
+                        delete scoreboards[key];
+                    });
                 }, function (err) {
-                    // If error processing board, close socket and remove from keys
                     console.log('Error processing scoreboard : ' + site.url);
                     delete scoreboards[key];
                 });
-            }, function (err) {
-                console.log('Error processing scoreboard : ' + site.url);
+            }else{
+                console.log('No client in room removing it : ' + key);
                 delete scoreboards[key];
-            });
+            }
+
         });
 
         setTimeout(function () {

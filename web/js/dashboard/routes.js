@@ -19,11 +19,12 @@ angular.module('Dashboard').config(['$stateProvider', '$urlRouterProvider',
             url: '/',
             templateUrl: 'views/articles.html'
         })
-        .state('login', {
-            url: '/login',
-            templateUrl: 'views/login.html',
-            controller: 'LoginCtrl'
+        .state('playerMatrix', {
+            url: '/playerMatrix',
+            templateUrl: 'views/playerMatrix.html',
+            controller: 'PlayerMatrixCtrl'
         })
+
         .state('sites', {
             url: '/sites',
             templateUrl: 'views/teams.html',
@@ -38,6 +39,11 @@ angular.module('Dashboard').config(['$stateProvider', '$urlRouterProvider',
             url: '/account',
             templateUrl: 'views/account.html',
             controller: 'AccountCtrl'
+        })
+        .state('login', {
+            url: '/login',
+            templateUrl: 'views/login.html',
+            controller: 'LoginCtrl'
         })
         .state('signup', {
             url: '/signup',
