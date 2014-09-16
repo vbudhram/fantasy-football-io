@@ -32,6 +32,8 @@ app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5',
                 newHomeTeam.scoreState = 'normal';
             }
         }
+
+        $scope.$apply();
     }
 
     function registerSocket(scoreboards) {
@@ -52,26 +54,27 @@ app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5',
                         applyHighlights(oldScoreboard, data);
                     }
                 }
+
+                // Remove hightlights after 1.5 seconds
+                setTimeout(function(){
+                    console.log('Removing highlights');
+                    for(var i=0;i<$scope.scoreboards.length;i++){
+                        var scoreboard = $scope.scoreboards[i];
+                        for (var j = 0; j < scoreboard.games.length; j++) {
+                            var newGame = scoreboard.games[j];
+                            var newAwayTeam = newGame.awayTeam[0];
+                            var newHomeTeam = newGame.homeTeam[0];
+                            newAwayTeam.scoreState = 'normal';
+                            newHomeTeam.scoreState = 'normal';
+                        }
+                    }
+                    $scope.$apply();
+                }, 1500);
+
             });
 
             $scope.sockets.push(socket);
         });
-
-        // Remove hightlights after 1.5 seconds
-        setTimeout(function () {
-            console.log('Removing highlights');
-            for (var i = 0; i < $scope.scoreboards.length; i++) {
-                var scoreboard = $scope.scoreboards[i];
-                for (var j = 0; j < scoreboard.games.length; j++) {
-                    var newGame = scoreboard.games[j];
-                    var newAwayTeam = newGame.awayTeam[0];
-                    var newHomeTeam = newGame.homeTeam[0];
-                    newAwayTeam.scoreState = 'normal';
-                    newHomeTeam.scoreState = 'normal';
-                }
-            }
-            $scope.$apply();
-        }, 1500);
     }
 
     $scope.getScoreboards = function () {

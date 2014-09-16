@@ -15,24 +15,17 @@
   display: inline;
   padding: 5px;
 }
+.done {
+  color: lightgray;
+}
+.highlightGreen {
+  background-color: lightgreen;
+}
+.highlightRed {
+  background-color: lightsalmon;
+}
 .teamPanel {
   min-height: 95px;
-}
-.teamPanel .highlightGreen {
-  background-color: lightgreen;
-  /*Transition*/
-  -webkit-transition: background-color 3s ease;
-  -moz-transition: background-color 3s ease;
-  -o-transition: background-color 3s ease;
-  transition: background-color 3s ease;
-}
-.teamPanel .highlightRed {
-  background-color: lightsalmon;
-  /*Transition*/
-  -webkit-transition: background-color 3s ease;
-  -moz-transition: background-color 3s ease;
-  -o-transition: background-color 3s ease;
-  transition: background-color 3s ease;
 }
 .teamPanel .toppanel {
   margin-top: 10px;

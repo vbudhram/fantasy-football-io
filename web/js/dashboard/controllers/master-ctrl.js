@@ -61,7 +61,7 @@ app.controller('MasterCtrl', ['$scope', '$http', '$rootScope', 'cfpLoadingBar', 
         var title = 'Fantasy Ally';
 
         if(next.indexOf('/scoreboards') > -1){
-            title = 'Scoreboards';
+            title = 'Live Scoreboard';
         }else if(next.indexOf('/sites') > -1){
             title = 'Teams';
         }else if(next.indexOf('/account') > -1){
