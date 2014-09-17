@@ -101,18 +101,30 @@
                                 }
 
                                 var playerName = cell.children[1].children[0].children[0].data;
-                                var position = cell.children[0].children[0].data;
-                                var playerTeamName = cell.children[1].children[1].data.replace(',', "").trim();
+                                var playerTokens = cell.children[1].children[1].data.replace(',', "").replace('*', "").trim().split(/[^\u000A\u0020-\u007E]/g);
+                                var playerTeamName = playerTokens[0];
+                                var position = playerTokens[1];
 
                                 if (teamUrl.indexOf('2014') > -1) {
                                     // TODO Figure this out later, not sure how to handle current year, point and rankings
                                     var slot = cell.children[0].children[0].data;
                                     var opponent = cell.children[4].children[0].children[0].children[0].data;
+                                    var projectedPoints = cell.children[12].children[0].data;
+                                    var previousPoints = cell.children[10].children[0].data;
+                                    var averagePoints = cell.children[9].children[0].data;
+
+                                    var playerId = cell.children[1].children[0].attribs.playerid;
+                                    var playerImage = 'http://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/' + playerId + '.png&w=200&h=145';
+
                                     var player = {
                                         position: position,
                                         playerName: playerName,
                                         playerTeamName: playerTeamName,
-                                        opponent: opponent
+                                        opponent: opponent,
+                                        averagePoints: averagePoints,
+                                        previousPoints: previousPoints,
+                                        projectedPoints: projectedPoints,
+                                        playerImage: playerImage
                                     };
 
                                     players.push(player);

@@ -13,6 +13,9 @@
                     <tr>
                         <th class="text-left">Player</th>
                         <th class="text-left">Position</th>
+                        <th class="text-left">Opp.</th>
+                        <th class="text-left">Projected</th>
+                        <th class="text-left">Average</th>
                         <th class="text-left">League</th>
                         <th class="text-left">News</th>
                     </tr>
@@ -21,10 +24,20 @@
 
                     <tr ng-repeat="player in players">
                         <td class="text-left vmiddle">
-                            {{player.playerInfo.playerName}}
+                            <img class="playerImage" ng-src="{{player.playerInfo.playerImage}}">
+                            {{player.playerInfo.playerName}} ({{player.playerInfo.playerTeamName}})
                         </td>
                         <td class="text-left vmiddle">
                             {{player.playerInfo.position}}
+                        </td>
+                        <td class="text-left vmiddle">
+                            {{player.playerInfo.opponent}}
+                        </td>
+                        <td class="text-left vmiddle">
+                            {{player.playerInfo.projectedPoints}}
+                        </td>
+                        <td class="text-left vmiddle">
+                            {{player.playerInfo.averagePoints}}
                         </td>
                         <td class="text-left vmiddle">
                             <h6 ng-repeat="team in player.playerTeam">{{team.name}}</h6>

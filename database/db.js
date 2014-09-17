@@ -56,7 +56,10 @@ module.exports = function (connectionUrl) {
         opponent: {type: String},
         positionRank: {type: Number},
         totalPoints: {type: Number},
-        averagePoints: {type: Number}
+        averagePoints: {type: Number},
+        projectedPoints: {type: Number},
+        previousPoints: {type: Number},
+        playerImage: {type: String}
     });
 
     var Team = new mongoose.Schema({
