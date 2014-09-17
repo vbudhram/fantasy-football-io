@@ -137,7 +137,11 @@ apiRouter.route('/users')
                 if (err) {
                     res.send(400, err);
                 } else {
-                    res.json(result);
+                    var apiResult = {
+                        user: cleanUser(result)
+                    };
+
+                    res.json(apiResult);
                 }
             });
         }, function (err) {
@@ -183,7 +187,7 @@ apiRouter.use('/:site', auth);
 apiRouter.route('/users', auth)
     .get(function (req, res) {
         db.User.find({'email': req.user[0].email}).exec(function (err, results) {
-            var user = results[0];
+            var user = cleanUser(results[0]);
             if (err) {
                 res.send(400, err);
             } else {
@@ -202,7 +206,7 @@ apiRouter.route('/users', auth)
 apiRouter.route('/:site')
     .get(function (req, res) {
         db.User.find({'email': req.user[0].email, 'sites.name': req.params.site}).exec(function (err, results) {
-            var user = results[0];
+            var user = cleanUser(results[0]);
             if (err) {
                 res.send(400, err);
             } else {
@@ -261,6 +265,7 @@ apiRouter.route('/:site')
                                 res.send(400, err);
                             } else {
                                 // TODO This should really only return the newly created site
+                                user = cleanUser(user);
                                 res.json(user.sites[user.sites.length-1]);
                             }
                         });
@@ -300,7 +305,7 @@ apiRouter.route('/:site/:id')
 apiRouter.route('/:site/:sport')
     .get(function (req, res) {
         db.User.find({'email': req.user[0].email, 'sites.name': req.params.site}).exec(function (err, results) {
-            var user = results[0];
+            var user = cleanUser(results[0]);
             if (err) {
                 res.send(400, err);
             } else {
@@ -368,6 +373,21 @@ app.use(apiRouter);
 server.listen(PORT, function () {
     console.log('Server started on ' + PORT);
 });
+
+/**
+ * Removes any confidential information from user object.
+ * @param user
+ * @returns {*}
+ */
+function cleanUser(user){
+    user.passwordHash = undefined;
+
+    user.sites.forEach(function(site){
+        site.username = undefined;
+        site.password = undefined;
+    });
+    return user;
+}
 
 // TODO find a better solution for doing timers
 function updateNews() {
