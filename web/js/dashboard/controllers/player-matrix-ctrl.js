@@ -3,13 +3,15 @@
  */
 app.controller('PlayerMatrixCtrl', ['$scope', '$http', 'UserService', function ($scope, $http, UserService) {
 
-    $http({method: 'get', url: '/users'}).
-        success(function (data, status) {
-            setupTable(data);
-        }).
-        error(function (data, status) {
-            console.log(data);
-        });
+    $scope.init = function(){
+        $http({method: 'get', url: '/users'}).
+            success(function (data, status) {
+                setupTable(data);
+            }).
+            error(function (data, status) {
+                console.log(data);
+            });
+    };
 
     // Format players
     function setupTable(user){
@@ -27,10 +29,8 @@ app.controller('PlayerMatrixCtrl', ['$scope', '$http', 'UserService', function (
                                     playerTeam: [team]
                                 };
                             }else{
-                                console.log('Adding existing : ' + player.playerName);
                                 delete team.players;
                                 players[player.playerName].playerTeam.push(team);
-                                debugger;
                             }
                         });
 

@@ -28,6 +28,7 @@ var morgan = require('morgan');
 var flash = require('connect-flash');
 var io = require('socket.io');
 var http = require('http');
+var favicon = require('serve-favicon');
 
 // Configure Session
 var session = require('express-session');
@@ -60,6 +61,7 @@ app.use(flash());
 app.use(session({store: redisStore,secret: sessionSecret}));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(favicon(__dirname + '/favicon.ico'));
 
 // Setup socketio
 var server = http.Server(app);

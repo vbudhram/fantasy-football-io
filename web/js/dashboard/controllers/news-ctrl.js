@@ -37,10 +37,11 @@ app.controller('NewsCtrl', ['$scope', '$http', function ($scope, $http) {
             {
                 return 'https://lh5.googleusercontent.com/-ZaYfYmjUUjA/AAAAAAAAAAI/AAAAAAAAIQs/Ydunp8tRLrg/s120-c/photo.jpg';
             }
-            default:
-            {
-                return '';
-            }
         }
     };
+
+    $scope.getMediaImageSrc = function(article){
+        return article.mediaUrl;
+    };
+
 }]);

@@ -8,14 +8,16 @@ app.controller('SiteCtrl', ['$scope', '$http', 'SiteService', function ($scope, 
     $scope.loading = true;
     $scope.teams = [];
 
-    SiteService.getTeams('espn','football').then(function(result){
-        $scope.loading = false;
-        $scope.teams = result.teams;
-    }, function(err){
-        console.log('Failed to get teams' + err);
-        $scope.loading = false;
-        $scope.teams = [];
-    });
+    $scope.init =  function(){
+        SiteService.getTeams('espn','football').then(function(result){
+            $scope.loading = false;
+            $scope.teams = result.teams;
+        }, function(err){
+            console.log('Failed to get teams' + err);
+            $scope.loading = false;
+            $scope.teams = [];
+        });
+    };
 
     $scope.getImageSrc = function(teamUrl){
         return SiteService.getSiteImage(teamUrl);

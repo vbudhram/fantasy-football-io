@@ -5,14 +5,16 @@
 
 app.controller('AccountCtrl', ['$scope', '$http', '$modal', '$log', 'SiteService', function ($scope, $http, $modal, $log, SiteService) {
 
-    $http({method: 'get', url: '/users'}).
-        success(function (data, status) {
-            $scope.user = data;
-            updateTotalTeams();
-        }).
-        error(function (data, status) {
-            console.log(data);
-        });
+    $scope.init = function(){
+        $http({method: 'get', url: '/users'}).
+            success(function (data, status) {
+                $scope.user = data;
+                updateTotalTeams();
+            }).
+            error(function (data, status) {
+                console.log(data);
+            });
+    };
 
     $scope.addSite = function () {
         var modalInstance = $modal.open({

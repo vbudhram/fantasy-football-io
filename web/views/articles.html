@@ -21,8 +21,8 @@
                                 <img height="50px" ng-src="{{getImageSrc(article)}}"/>
                             </td>
                             <td>
-                                <div class="vmiddle mediaImage">
-                                    <img ng-if="article.mediaUrl" height="50px" src="{{article.mediaUrl}}"/>
+                                <div class="vmiddle mediaImage" ng-if="article.mediaUrl">
+                                    <img height="50px" ng-src="{{getMediaImageSrc(article)}}"/>
                                 </div>
 
                                 <div class="vmiddle mediaImage">
