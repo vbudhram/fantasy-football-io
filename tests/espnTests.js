@@ -3,9 +3,9 @@
  */
 
 describe('ESPN Test', function () {
-    var credentials = require('../../../fantasyCredentials.json');
+    var credentials = require('../../fantasyCredentials.json');
 
-    var ESPN = require('../../utils/espnUtils');
+    var ESPN = require('../utils/espnUtils');
 
     it('should retrieve leagues and teams of user', function (done) {
         var username = credentials.username;
@@ -38,7 +38,7 @@ describe('ESPN Test', function () {
         });
     });
 
-    it.only('should save scoreboard for each league', function (done) {
+    it('should save scoreboard for each league', function (done) {
         var username = credentials.username;
         var password = credentials.password;
         var url = 'http://games.espn.go.com/ffl/scoreboard?leagueId=765690&seasonId=2014';

@@ -6,9 +6,7 @@
             <div class="widget-title title">
                 <div class="row">
                     <img class="logo" ng-src="{{getImageSrc(scoreboard)}}"/>
-                    <h5 class="name">{{scoreboard.name}}
-
-                    </h5>
+                    <h5 class="name"><a href="{{scoreboard.url}}" target="_blank">{{scoreboard.name}}</a></h5>
                     <i ng-if="sockets[$index].connected" class="fa fa-circle text-success status"></i>
                     <i ng-if="!sockets[$index].connected" class="fa fa-circle text-danger status"></i>
                 </div>
@@ -59,10 +57,7 @@
                         <br/>
                     </div>
                 </div>
-
             </div>
-
-
         </div>
 
     </div>

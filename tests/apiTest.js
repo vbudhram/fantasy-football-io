@@ -95,7 +95,7 @@ describe('Fantasy Football IO API Test', function () {
                     });
             });
 
-            before('should login', function (done) {
+            it('should login', function (done) {
                 var validUserInfo = {
                     email: 'vbudhram2@gmail.com',
                     password: 'password'

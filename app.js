@@ -70,7 +70,6 @@ var socketio = io(server);
 // Workers
 var scoreboardWorker = require('./workers/scoreboardWorker')(socketio);
 
-
 if (env === 'development') {
     app.use(express.static(__dirname + '/web'));
 } else if (env === 'production' || env === 'staging') {
@@ -138,7 +137,6 @@ apiRouter.route('/users')
                 if (err) {
                     res.send(400, err);
                 } else {
-
                     res.json(result);
                 }
             });
