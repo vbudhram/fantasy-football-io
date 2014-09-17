@@ -16,6 +16,10 @@ var redisSessionHost = process.env.REDIS_SESSION_HOST || 'localhost';
 var redisSessionPort = process.env.REDIS_SESSION_PORT || 6379;
 var redisSessionPass = process.env.REDIS_SESSION_PASS;
 
+if(env === 'production' || env === 'staging') {
+    require('newrelic');
+}
+
 // Required middleware
 var express = require('express');
 var bodyParser = require('body-parser');
