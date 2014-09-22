@@ -3,7 +3,7 @@
  */
 
 describe('ESPN Test', function () {
-    var credentials = require('../../fantasyCredentials.json');
+    var credentials = require('../../fantasyCredentials.json').espn;
 
     var ESPN = require('../utils/espnUtils');
 
@@ -50,6 +50,5 @@ describe('ESPN Test', function () {
                 done(err);
             });
         });
-
     });
 });

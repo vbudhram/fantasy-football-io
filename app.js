@@ -16,7 +16,7 @@ var redisSessionHost = process.env.REDIS_SESSION_HOST || 'localhost';
 var redisSessionPort = process.env.REDIS_SESSION_PORT || 6379;
 var redisSessionPass = process.env.REDIS_SESSION_PASS;
 
-if(env === 'production' || env === 'staging') {
+if (env === 'production' || env === 'staging') {
     require('newrelic');
 }
 
@@ -48,6 +48,7 @@ var passport = require('./auth/LocalStrategy')(db);
 // Utils
 var encryptionUtils = require('./utils/encryptionUtils')(salt);
 var espnUtils = require('./utils/espnUtils');
+var yahooUtils = require('./utils/yahooUtils');
 var newsUtils = require('./utils/newsUtils');
 var validationRules = require('./utils/validationUtils');
 
@@ -58,7 +59,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(flash());
-app.use(session({store: redisStore,secret: sessionSecret}));
+app.use(session({store: redisStore, secret: sessionSecret}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(favicon(__dirname + '/favicon.ico'));
@@ -238,24 +239,25 @@ apiRouter.route('/:site')
 //            res.send(400, 'No user is logged in');
 //        }
 
-        switch (req.params.site) {
-            case 'espn':
-            {
-                db.User.find({'email': req.user[0].email}).exec(function (err, results) {
-                    var user = results[0];
 
-                    var site = {
-                        name: 'espn',
-                        username: encryptionUtils.encrypt(username),
-                        password: encryptionUtils.encrypt(password),
-                        sports: [
-                            {
-                                name: 'football',
-                                teams: []
-                            }
-                        ]
-                    };
+        db.User.find({'email': req.user[0].email}).exec(function (err, results) {
+            var user = results[0];
 
+            var site = {
+                name: req.params.site,
+                username: encryptionUtils.encrypt(username),
+                password: encryptionUtils.encrypt(password),
+                sports: [
+                    {
+                        name: 'football',
+                        teams: []
+                    }
+                ]
+            };
+
+            switch (req.params.site) {
+                case 'espn':
+                {
                     espnUtils.getTeams(username, password).then(function (teams) {
                         // TODO Fix this when supporting multiple sites
                         site.sports[0].teams = teams;
@@ -266,15 +268,36 @@ apiRouter.route('/:site')
                             } else {
                                 // TODO This should really only return the newly created site
                                 user = cleanUser(user);
-                                res.json(user.sites[user.sites.length-1]);
+                                res.json(user.sites[user.sites.length - 1]);
                             }
                         });
                     }, function (err) {
                         res.status(400).send({ error: err.message });
                     });
-                });
+
+                    break;
+                }
+                case 'yahoo':
+                {
+                    yahooUtils.getTeams(username, password).then(function (teams) {
+                        // TODO Fix this when supporting multiple sites
+                        site.sports[0].teams = teams;
+                        user.sites.push(site);
+                        user.save(function (err, result) {
+                            if (err) {
+                                res.send(400, err);
+                            } else {
+                                // TODO This should really only return the newly created site
+                                user = cleanUser(user);
+                                res.json(user.sites[user.sites.length - 1]);
+                            }
+                        });
+                    }, function (err) {
+                        res.status(400).send({ error: err.message });
+                    });
+                }
             }
-        }
+        });
     });
 
 apiRouter.route('/:site/:id')
@@ -300,7 +323,7 @@ apiRouter.route('/:site/:id')
                 }
             }
         });
-    })
+    });
 
 apiRouter.route('/:site/:sport')
     .get(function (req, res) {
@@ -379,10 +402,9 @@ server.listen(PORT, function () {
  * @param user
  * @returns {*}
  */
-function cleanUser(user){
+function cleanUser(user) {
     user.passwordHash = undefined;
-
-    user.sites.forEach(function(site){
+    user.sites.forEach(function (site) {
         site.username = undefined;
         site.password = undefined;
     });

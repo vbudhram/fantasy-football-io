@@ -45,13 +45,15 @@
     "mongoose": "^3.8.14",
     "morgan": "^1.2.2",
     "newrelic": "^1.11.1",
+    "node-phantom": "^0.2.5",
     "passport": "^0.2.0",
     "passport-local": "^1.0.0",
     "q": "^1.0.1",
     "request": "^2.39.0",
     "serve-favicon": "^2.1.4",
     "socket.io": "^1.1.0",
-    "superagent": "^0.18.2"
+    "superagent": "^0.18.2",
+    "zombie": "^2.0.0-alpha31"
   },
   "devDependencies": {
     "should": "^4.0.4",

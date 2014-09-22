@@ -8,7 +8,8 @@ var should = require('should');
 var request = supertest('localhost:8080');
 var app = require('../app');
 
-var espnCredentials = require('../../fantasyCredentials.json');
+var espnCredentials = require('../../fantasyCredentials.json').espn;
+var yahooCredentials = require('../../fantasyCredentials.json').yahoo;
 
 var connectionUrl = 'mongodb://127.0.0.1:27017/fantasy-football';
 before('should clean database', function (done) {
@@ -71,7 +72,7 @@ describe('Fantasy Football IO API Test', function () {
                 });
         });
 
-        describe('should get logged in user information', function(){
+        describe('should get logged in user information', function () {
             var request = require('supertest');
             var agent = request.agent('localhost:8080');
 
@@ -242,16 +243,31 @@ describe('Fantasy Football IO API Test', function () {
 
             it('should reject invalid account', function (done) {
                 agent.post('/espn')
-                    .send({username:'asdf', password:'asdf'})
+                    .send({username: 'asdf', password: 'asdf'})
                     .expect(400)
                     .end(function (err, res) {
                         console.log(res.body);
                         done();
                     });
             });
+
+            it('should add yahoo account', function (done) {
+                var username =
+                agent.post('/yahoo')
+                    .send(yahooCredentials)
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) {
+                            done(err);
+                        } else {
+                            console.log(res.body);
+                            done();
+                        }
+                    });
+            });
         });
 
-        describe('should remove espn site from account', function(){
+        describe('should remove espn site from account', function () {
             var request = require('supertest');
             var agent = request.agent('localhost:8080');
 
@@ -317,12 +333,12 @@ describe('Fantasy Football IO API Test', function () {
 
 
             it('should remove espn site from account', function (done) {
-                agent.delete('/espn/'+user.sites[0]._id)
+                agent.delete('/espn/' + user.sites[0]._id)
                     .expect(204)
                     .end(function (err, res) {
-                        if(err){
+                        if (err) {
                             done(err);
-                        }else{
+                        } else {
                             done();
                         }
                     });
@@ -332,9 +348,9 @@ describe('Fantasy Football IO API Test', function () {
                 agent.get('/users')
                     .expect(200)
                     .end(function (err, res) {
-                        if(err){
+                        if (err) {
                             done(err);
-                        }else{
+                        } else {
                             res.body.sites.length.should.equal(0);
                             done();
                         }
