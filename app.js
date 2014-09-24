@@ -280,7 +280,6 @@ apiRouter.route('/:site')
                 case 'yahoo':
                 {
                     yahooUtils.getTeams(username, password).then(function (teams) {
-                        // TODO Fix this when supporting multiple sites
                         site.sports[0].teams = teams;
                         user.sites.push(site);
                         user.save(function (err, result) {
