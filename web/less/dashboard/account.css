@@ -5,4 +5,10 @@
 }
 .siteOption {
   cursor: pointer;
+  display: inline-table;
+  padding: 0 10px 30px;
+}
+.siteOption img {
+  display: block !important;
+  margin: 0 auto !important;
 }
