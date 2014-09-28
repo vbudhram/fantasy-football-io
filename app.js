@@ -334,7 +334,7 @@ apiRouter.route('/:site/:sport')
                 if (user) {
                     var teams = [];
 
-                    // Combine all espn football teams
+                    // Combine all football teams
                     user.sites.forEach(function (site) {
                         if (site.name === req.params.site) {
                             site.sports.forEach(function (sport) {

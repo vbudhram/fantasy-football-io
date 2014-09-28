@@ -108,9 +108,29 @@
                                 if (teamUrl.indexOf('2014') > -1) {
                                     // TODO Figure this out later, not sure how to handle current year, point and rankings
                                     var slot = cell.children[0].children[0].data;
-                                    var opponent = cell.children[4].children[0].children[0].children[0].data;
-                                    var projectedPoints = cell.children[12].children[0].data;
-                                    var previousPoints = cell.children[10].children[0].data;
+
+                                    var opponent;
+                                    try {
+                                        opponent = cell.children[4].children[0].children[0].children[0].data;
+                                    } catch (e) {
+                                        opponent = '';
+                                    }
+
+                                    var projectedPoints = 0;
+                                    try {
+                                        projectedPoints = cell.children[12].children[0].data;
+                                        if(projectedPoints === '--'){
+                                            projectedPoints = 0;
+                                        }
+                                    } catch (e) {
+                                    }
+
+                                    var previousPoints = 0;
+                                    try {
+                                        previousPoints = cell.children[10].children[0].data;
+                                    } catch (e) {
+                                    }
+
                                     var averagePoints = cell.children[9].children[0].data;
 
                                     var playerId = cell.children[1].children[0].attribs.playerid;

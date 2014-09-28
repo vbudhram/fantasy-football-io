@@ -28,7 +28,7 @@ describe('Yahoo Test', function () {
         });
     });
 
-    it.only('should save scoreboard for each league', function (done) {
+    it('should save scoreboard for each league', function (done) {
         var username = credentials.yahoo.username;
         var password = credentials.yahoo.password;
         var url = 'http://football.fantasysports.yahoo.com/f1/14813';

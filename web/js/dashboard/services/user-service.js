@@ -7,6 +7,21 @@
 
 app.service('UserService', ['$http', '$q', '$location', '$cookieStore', 'md5', '$rootScope', function ($http, $q, $location, $cookieStore, md5, $rootScope) {
 
+    this.getLatestUser = function(){
+        var deferred = $q.defer();
+
+        $http({method: 'get', url: '/users'}).
+            success(function (data, status) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status) {
+                console.log(data);
+                deferred.reject(data);
+            });
+
+        return deferred.promise;
+    };
+
     this.getCurrentUser = function () {
         console.log('Getting current user');
         return $cookieStore.get('user');

@@ -3,23 +3,26 @@
  */
 'use strict';
 
-app.controller('SiteCtrl', ['$scope', '$http', 'SiteService', function ($scope, $http, SiteService) {
+app.controller('SiteCtrl', ['$scope', '$http', 'SiteService', 'UserService', function ($scope, $http, SiteService, UserService) {
 
     $scope.loading = true;
     $scope.teams = [];
 
-    $scope.init =  function(){
-        SiteService.getTeams('espn','football').then(function(result){
+    $scope.init = function () {
+        $scope.teams = [];
+        $scope.loading = true;
+        UserService.getLatestUser().then(function (data) {
+            data.sites.forEach(function (site) {
+                $scope.teams = $scope.teams.concat(site.sports[0].teams);
+            });
             $scope.loading = false;
-            $scope.teams = result.teams;
-        }, function(err){
-            console.log('Failed to get teams' + err);
+        }, function (err) {
+            console.log(err);
             $scope.loading = false;
-            $scope.teams = [];
         });
     };
 
-    $scope.getImageSrc = function(teamUrl){
+    $scope.getImageSrc = function (teamUrl) {
         return SiteService.getSiteImage(teamUrl);
     };
 }]);

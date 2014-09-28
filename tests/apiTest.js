@@ -159,8 +159,8 @@ describe('Fantasy Football IO API Test', function () {
         });
     });
 
-    describe('Team API', function () {
-        it('should reject add espn team information for unauthorized users', function (done) {
+    describe('Site API', function () {
+        it('should reject add espn site information for unauthorized users', function (done) {
             request.post('/espn')
                 .send(espnCredentials)
                 .expect(403)
@@ -169,7 +169,7 @@ describe('Fantasy Football IO API Test', function () {
                 });
         });
 
-        describe('should add espn team information for users', function () {
+        describe('should add espn site information for users', function () {
             var request = require('supertest');
             var agent = request.agent('localhost:8080');
 
@@ -252,7 +252,6 @@ describe('Fantasy Football IO API Test', function () {
             });
 
             it('should add yahoo account', function (done) {
-                var username =
                 agent.post('/yahoo')
                     .send(yahooCredentials)
                     .expect(200)
@@ -261,6 +260,18 @@ describe('Fantasy Football IO API Test', function () {
                             done(err);
                         } else {
                             console.log(res.body);
+                            done();
+                        }
+                    });
+            });
+
+            it('should get yahoo football information', function (done) {
+                agent.get('/yahoo/football')
+                    .expect(200)
+                    .end(function (err, res) {
+                        if (err) {
+                            done(err);
+                        } else {
                             done();
                         }
                     });
@@ -408,8 +419,29 @@ describe('Fantasy Football IO API Test', function () {
                 });
         });
 
-        it('should add scoreboards for user leagues', function (done) {
+        it('should add espn scoreboards for user leagues', function (done) {
             agent.post('/espn/football/scoreboard')
+                .expect(200)
+                .end(function (err, res) {
+                    done();
+                });
+        });
+
+        it('should add yahoo user information for user', function (done) {
+            agent.post('/yahoo')
+                .send(yahooCredentials)
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        done(err);
+                    } else {
+                        done();
+                    }
+                });
+        });
+
+        it('should add yahoo scoreboards for user leagues', function (done) {
+            agent.post('/yahoo/football/scoreboard')
                 .expect(200)
                 .end(function (err, res) {
                     done();
