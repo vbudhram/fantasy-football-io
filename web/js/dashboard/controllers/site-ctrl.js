@@ -11,6 +11,7 @@ app.controller('SiteCtrl', ['$scope', '$http', 'SiteService', 'UserService', fun
     $scope.init = function () {
         $scope.teams = [];
         $scope.loading = true;
+
         UserService.getLatestUser().then(function (data) {
             data.sites.forEach(function (site) {
                 $scope.teams = $scope.teams.concat(site.sports[0].teams);

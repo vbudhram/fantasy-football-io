@@ -1,8 +1,9 @@
 /**
  * Created by vbudhram on 9/8/14.
  */
-app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5', 'SiteService', function ($scope, $http, ScoreboardService, md5, SiteService) {
+app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5', 'SiteService', 'UserService', function ($scope, $http, ScoreboardService, md5, SiteService, UserService) {
 
+    $scope.isFiltered = false;
     $scope.loading = false;
     $scope.sockets = [];
 
@@ -36,6 +37,30 @@ app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5',
         $scope.$apply();
     }
 
+    function applyFilterData() {
+        $scope.scoreboards.forEach(function (scoreboard) {
+            scoreboard.games.forEach(function (game) {
+                var homeTeam = game.homeTeam[0];
+                var awayTeam = game.awayTeam[0];
+                if (!$scope.teams || containsTeam(homeTeam.name) || containsTeam(awayTeam.name)) {
+                    game.visible = true;
+                }else{
+                    game.visible = false;
+                }
+            });
+        });
+    }
+
+    function containsTeam(name) {
+        for (var i = 0; i < $scope.teams.length; i++) {
+            var team = $scope.teams[i];
+            if (name === team.name) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function registerSocket(scoreboards) {
         scoreboards.forEach(function (scoreboard) {
             var roomName = md5.createHash(scoreboard.url);
@@ -51,14 +76,15 @@ app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5',
                     if (scoreboard.url === data.url) {
                         var oldScoreboard = $scope.scoreboards[i];
                         $scope.scoreboards[i] = data;
+                        applyFilterData();
                         applyHighlights(oldScoreboard, data);
                     }
                 }
 
                 // Remove hightlights after 1.5 seconds
-                setTimeout(function(){
+                setTimeout(function () {
                     console.log('Removing highlights');
-                    for(var i=0;i<$scope.scoreboards.length;i++){
+                    for (var i = 0; i < $scope.scoreboards.length; i++) {
                         var scoreboard = $scope.scoreboards[i];
                         for (var j = 0; j < scoreboard.games.length; j++) {
                             var newGame = scoreboard.games[j];
@@ -84,6 +110,7 @@ app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5',
             $scope.loading = false;
             $scope.scoreboards = result;
             registerSocket(result);
+            applyFilterData();
         }, function (err) {
             $scope.loading = false;
             $scope.error = err;
@@ -92,5 +119,24 @@ app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5',
 
     $scope.getImageSrc = function (scoreboard) {
         return SiteService.getSiteImage(scoreboard.site);
+    };
+
+    $scope.filterMyTeams = function () {
+
+        if(!$scope.isFiltered){
+            console.log('Filtering only for user\'s team');
+            UserService.getLatestUser().then(function (data) {
+                $scope.teams = [];
+                data.sites.forEach(function (site) {
+                    $scope.teams = $scope.teams.concat(site.sports[0].teams);
+                });
+                applyFilterData();
+            }, function (err) {
+                console.log(err);
+            });
+        }else{
+            $scope.teams = undefined;
+            applyFilterData();
+        }
     };
 }]);

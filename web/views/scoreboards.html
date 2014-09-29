@@ -1,7 +1,12 @@
 <div ng-controller="ScoreboardCtrl" ng-init="getScoreboards('espn','football')">
+    <div class="row">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="isFiltered" ng-click="filterMyTeams()"> Only my teams
+            </label>
+        </div>
+    </div>
     <div class="row" ng-repeat="scoreboard in scoreboards">
-
-
         <div class="widget no-padding">
             <div class="widget-title title">
                 <div class="row">
@@ -17,7 +22,7 @@
 
             <div class="widget-body no-padding">
                 <div class="row">
-                    <div class="col-lg-2 col-md-4 col-sm-6" ng-repeat="game in scoreboard.games">
+                    <div class="col-lg-2 col-md-4 col-sm-6" ng-repeat="game in scoreboard.games" ng-if="game.visible">
 
                         <!--<div ng-repeat="team in game.homeTeam">-->
                         <!--<div class="title">{{team.name}}</div>-->
