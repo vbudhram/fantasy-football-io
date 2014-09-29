@@ -80,7 +80,7 @@ app.controller('ScoreboardCtrl', ['$scope', '$http', 'ScoreboardService', 'md5',
     $scope.getScoreboards = function () {
         console.log('Getting scoreboards');
         $scope.loading = true;
-        ScoreboardService.getScoreboards('espn', 'football').then(function (result) {
+        ScoreboardService.getScoreboards().then(function (result) {
             $scope.loading = false;
             $scope.scoreboards = result;
             registerSocket(result);

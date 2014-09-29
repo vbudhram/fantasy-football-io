@@ -123,7 +123,7 @@
                 var rank = $('em').filter('.Fz-xxs')[0].children[0].data;// + $('em').filter('.Fz-xxs')[0].children[1].children[0].data;
                 var teamImageUrl = $('img').filter('.Avatar-lg')[0].attribs.src;
                 var leagueName = $('span').filter('.Mbot-xs')[0].children[1].data;
-                var scoreboardUrl = teamUrl;
+                var scoreboardUrl = teamUrl.substring(0, teamUrl.lastIndexOf('/'));
 
                 var team = {
                     active: true,
@@ -159,15 +159,18 @@
 
         q.all(loginDefers).then(function (loginResults) {
             var defers = [];
-            for (var i = 0; i < loginResults.length; i++) {
-                var cookieJar = loginResults[i].cookieJar;
-                var site = user.sites[i];
+            var loginIndex = 0;
+            user.sites.forEach(function (site) {
+                if (site.name === 'yahoo') {
+                    var cookieJar = loginResults[loginIndex].cookieJar;
+                    loginIndex++;
 
-                site.sports[0].teams.forEach(function (team) {
-                    var url = team.leagueScoreboardUrl;
-                    defers.push(getScoreboard(url, cookieJar));
-                });
-            }
+                    site.sports[0].teams.forEach(function (team) {
+                        var url = team.leagueScoreboardUrl;
+                        defers.push(getScoreboard(url, cookieJar));
+                    });
+                }
+            });
 
             q.allSettled(defers).done(function (results) {
                 results.forEach(function (result) {
@@ -255,7 +258,6 @@
                     };
 
                     deferred.resolve(scoreboard);
-
                 } catch (err) {
                     deferred.reject(err);
                 }

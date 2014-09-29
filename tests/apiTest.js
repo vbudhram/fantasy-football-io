@@ -420,7 +420,7 @@ describe('Fantasy Football IO API Test', function () {
         });
 
         it('should add espn scoreboards for user leagues', function (done) {
-            agent.post('/espn/football/scoreboard')
+            agent.post('/scoreboard/espn/football')
                 .expect(200)
                 .end(function (err, res) {
                     done();
@@ -435,13 +435,27 @@ describe('Fantasy Football IO API Test', function () {
                     if (err) {
                         done(err);
                     } else {
+                        res.should.not.be.null;
                         done();
                     }
                 });
         });
 
         it('should add yahoo scoreboards for user leagues', function (done) {
-            agent.post('/yahoo/football/scoreboard')
+            agent.post('/scoreboard/yahoo/football')
+                .expect(200)
+                .end(function (err, res) {
+                    if(err){
+                        done(err);;
+                    }else{
+                        res.should.not.be.null;
+                        done();
+                    }
+                });
+        });
+
+        it('should add all scoreboards for user leagues', function (done) {
+            agent.get('/scoreboards')
                 .expect(200)
                 .end(function (err, res) {
                     done();

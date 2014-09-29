@@ -19,6 +19,8 @@ var redisSessionPass = process.env.REDIS_SESSION_PASS;
 if (env === 'production' || env === 'staging') {
     require('newrelic');
 }
+// Libaries
+var q = require('q');
 
 // Required middleware
 var express = require('express');
@@ -183,8 +185,6 @@ function auth(req, res, next) {
     }
 }
 
-apiRouter.use('/:site', auth);
-
 apiRouter.route('/users', auth)
     .get(function (req, res) {
         db.User.find({'email': req.user[0].email}).exec(function (err, results) {
@@ -203,6 +203,67 @@ apiRouter.route('/users', auth)
             res.send(400, err);
         });
     });
+
+apiRouter.route('/scoreboards')
+    .get(function (req, res) {
+        db.User.find({'email': req.user[0].email}).exec(function (err, results) {
+            var user = results[0];
+            if (user) {
+                var defers = [];
+                user.sites.forEach(function (site) {
+                    var defer = q.defer();
+                    defers.push(defer.promise);
+                    switch (site.name) {
+                        case 'espn':
+                        {
+                            espnUtils.getScoreboards(user, encryptionUtils).then(function (scoreboards) {
+                                defer.resolve(scoreboards);
+                            }, function (err) {
+                                console.log(err);
+                                defer.reject(err);
+                            });
+                            break;
+                        }
+                        case 'yahoo':
+                        {
+                            yahooUtils.getScoreboards(user, encryptionUtils).then(function (scoreboards) {
+                                defer.resolve(scoreboards);
+                            }, function (err) {
+                                console.log(err);
+                                defer.reject(err);
+                            });
+                            break;
+                        }
+                    }
+                });
+
+                q.allSettled(defers).done(function (results) {
+                    var apiResult = {
+                        scoreboards: []
+                    };
+
+                    results.forEach(function(result){
+                        if(result.state === 'fulfilled'){
+                            apiResult.scoreboards = apiResult.scoreboards.concat(result.value);
+                        }
+                    });
+
+                    db.LeagueScoreboard.create(apiResult.scoreboards, function (err, results) {
+                        // Register boards with socketio for realtime score updates
+                        // TODO Maybe move this to a register api call
+                        scoreboardWorker.registerBoard({
+                            user: user,
+                            encryptionUtils: encryptionUtils
+                        });
+
+                        res.send(apiResult);
+                    });
+                });
+            }
+        });
+    });
+
+apiRouter.use('/:site', auth);
 
 apiRouter.route('/:site')
     .get(function (req, res) {
@@ -259,7 +320,6 @@ apiRouter.route('/:site')
                 case 'espn':
                 {
                     espnUtils.getTeams(username, password).then(function (teams) {
-                        // TODO Fix this when supporting multiple sites
                         site.sports[0].teams = teams;
                         user.sites.push(site);
                         user.save(function (err, result) {
@@ -360,30 +420,48 @@ apiRouter.route('/scoreboard/:site/:sport')
         db.User.find({'email': req.user[0].email, 'sites.name': req.params.site}).exec(function (err, results) {
             var user = results[0];
             if (user) {
+                var defer = q.defer();
                 switch (req.params.site) {
                     case 'espn':
                     {
                         espnUtils.getScoreboards(user, encryptionUtils).then(function (scoreboards) {
-                            db.LeagueScoreboard.create(scoreboards, function (err, result) {
-                                var apiResult = {
-                                    scoreboards: scoreboards
-                                };
-
-                                // Register boards with socketio for realtime score updates
-                                // TODO Maybe move this to a register api call
-                                scoreboardWorker.registerBoard({
-                                    user: user,
-                                    encryptionUtils: encryptionUtils,
-                                    scoreboards: scoreboards
-                                });
-
-                                res.json(apiResult);
-                            });
+                            defer.resolve(scoreboards);
                         }, function (err) {
-                            res.status(400).send({ error: err.message });
+                            defer.reject(err);
                         });
+                        break;
+                    }
+                    case 'yahoo':
+                    {
+                        yahooUtils.getScoreboards(user, encryptionUtils).then(function (scoreboards) {
+                            defer.resolve(scoreboards);
+                        }, function (err) {
+                            defer.reject(err);
+                        });
+                        break;
                     }
                 }
+
+                defer.promise.then(function(scoreboards){
+                    db.LeagueScoreboard.create(scoreboards, function (err, result) {
+                        var apiResult = {
+                            scoreboards: scoreboards
+                        };
+
+                        // Register boards with socketio for realtime score updates
+                        // TODO Maybe move this to a register api call
+                        scoreboardWorker.registerBoard({
+                            user: user,
+                            encryptionUtils: encryptionUtils,
+                            scoreboards: scoreboards
+                        });
+
+                        res.json(apiResult);
+                    });
+                }, function(err){
+                    res.status(400).send({ error: err.message });
+                });
+
             } else {
                 res.send(400, {error: 'Unable to get user\'s scoreboard'});
             }

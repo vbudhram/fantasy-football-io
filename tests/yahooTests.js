@@ -35,6 +35,7 @@ describe('Yahoo Test', function () {
         YAHOO.login(username, password).then(function(data){
             var cookieJar = data.cookieJar;
             YAHOO.getScoreboard(url, cookieJar).then(function(data){
+                data.should.not.be.null;
                 done();
             }, function(err){
                 done(err);
