@@ -25,6 +25,7 @@
     "angular-loading-bar": "~0.5.1",
     "angular-animate": "~1.2.23",
     "angular-md5": "~0.1.7",
-    "socket.io-client": "~1.1.0"
+    "socket.io-client": "~1.1.0",
+    "bootstrap-material-design": "*"
   }
 }
