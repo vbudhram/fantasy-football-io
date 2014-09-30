@@ -516,10 +516,10 @@ setTimeout(updateNews, 1000);
 function updateScoreboards() {
     scoreboardWorker.processBoards().then(function (data) {
         console.log('Updated scoreboards');
-        setTimeout(updateScoreboards, 5000);
+        setTimeout(updateScoreboards, 10000);
     }, function (err) {
         console.log('Updated scoreboards');
-        setTimeout(updateScoreboards, 5000);
+        setTimeout(updateScoreboards, 10000);
     });
 }
 setTimeout(updateScoreboards, 1000);

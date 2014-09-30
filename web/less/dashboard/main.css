@@ -84,3 +84,9 @@ div.loginButton {
 .playerImage {
   width: 100px;
 }
+.avatar {
+  padding: 0px !important;
+}
+.avatar img {
+  width: 60px;
+}

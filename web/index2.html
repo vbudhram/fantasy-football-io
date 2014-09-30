@@ -34,13 +34,6 @@
     <link rel="stylesheet" type="text/css" href="less/dashboard/teams.css">
     <!-- endbuild -->
 
-    <!-- build:css css/dashboard/material.css -->
-    <link href="bower_components/bootstrap-material-design/css-compiled/ripples.css" rel="stylesheet">
-    <link href="bower_components/bootstrap-material-design/css-compiled/material.css" rel="stylesheet">
-    <link href="bower_components/bootstrap-material-design/icons/icons-material-design.css" rel="stylesheet">
-    <link href="//fezvrasta.github.io/snackbarjs/dist/snackbar.min.css" rel="stylesheet">
-    <!-- endbuild -->
-
     <!-- SCRIPTS -->
     <!-- build:js lib/angular/angular.js -->
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
@@ -85,9 +78,6 @@
     <script type="text/javascript" src="bower_components/socket.io-client/socket.io.js"></script>
     <!-- endbuild -->
 
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-
     <!-- build:js js/dashboard.js -->
     <script type="text/javascript" src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
     <script type="text/javascript" src="bower_components/angular-md5/angular-md5.js"></script>
@@ -108,68 +98,106 @@
     <!-- endbuild -->
 
     <!-- SCRIPTS -->
+
 </head>
 <body ng-controller="MasterCtrl" ng-init="init()">
-<div class="bs-component">
-    <div class="navbar navbar-default">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target=".navbar-responsive-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="javascript:void(0)">Fantasy Ally</a>
-        </div>
+<div id="page-wrapper" ng-class="{'active': toggle}" ng-cloak>
 
-        <div class="navbar-collapse collapse navbar-responsive-collapse">
-            <ul class="nav navbar-nav">
-                <li class="sidebar-list">
-                    <a href="#">News</span></a>
-                </li>
-                <li class="sidebar-list">
-                    <a href="#/playerMatrix">Player Matrix</span></a>
-                </li>
-                <li class="sidebar-list">
-                    <a href="#/sites">Teams</span></a>
-                </li>
-                <li class="sidebar-list">
-                    <a href="#/scoreboards">Scoreboards</span></a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right" ng-show="!user">
-                <li><a href="#/signup">Signup</a></li>
-                <li><a href="#/login">Login</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right" ng-show="user">
-                <li class="dropdown">
-                    <a href="javascript:void(0)" class="dropdown-toggle avatar" data-toggle="dropdown">
-                        <img ng-src="{{user.avatarUrl}}">
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li class="dropdown-header">
-                            {{user.email}}
-                        </li>
-                        <li class="divider"></li>
-                        <li class="link" ng-if="user">
-                            <a href="#/account">
-                                Account
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li class="link">
-                            <a ng-click="logout()">
-                                Logout
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <ul class="sidebar">
+            <li class="sidebar-main">
+                <a ng-click="toggleSidebar()">
+                    FANTASY ALLY
+                    <span class="menu-icon glyphicon glyphicon-transfer"></span>
+                </a>
+            </li>
+            <li class="sidebar-title"><span>NAVIGATION</span></li>
+            <li class="sidebar-list">
+                <a href="#">News <span class="menu-icon fa fa-tasks"></span></a>
+            </li>
+            <li class="sidebar-list">
+                <a href="#/playerMatrix">Player Matrix <span class="menu-icon fa fa-users"></span></a>
+            </li>
+            <li class="sidebar-list">
+                <a href="#/sites">Teams <span class="menu-icon fa fa-tachometer"></span></a>
+            </li>
+            <li class="sidebar-list">
+                <a href="#/scoreboards">Scoreboards <span class="menu-icon fa fa-star"></span></a>
+            </li>
+            <!--<li class="sidebar-list">-->
+            <!--<a href="#">Servers <span class="menu-icon fa fa-tasks"></span></a>-->
+            <!--</li>-->
+            <!--<li class="sidebar-list">-->
+            <!--<a href="#">Settings <span class="menu-icon fa fa-cogs"></span></a>-->
+            <!--</li>-->
+            <!--<li class="sidebar-title separator"><span>QUICK LINKS</span></li>-->
+            <!--<li class="sidebar-list">-->
+            <!--<a href="#" target="_blank">Forums <span class="menu-icon fa fa-external-link"></span></a>-->
+            <!--</li>-->
+        </ul>
+        <div class="sidebar-footer">
+            <!--<div class="col-xs-4">-->
+            <!--<a href="#" target="_blank">-->
+            <!--About-->
+            <!--</a>-->
+            <!--</div>-->
         </div>
     </div>
+
+    <!-- End Sidebar -->
+
+    <div id="content-wrapper">
+        <div class="page-content">
+            <!-- Header Bar -->
+            <div class="row header">
+                <div class="col-xs-12">
+                    <div class="user pull-right">
+                        <div ng-show="user" class="item dropdown">
+                            <a href="#" class="dropdown-toggle">
+                                <img ng-src="{{user.avatarUrl}}">
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li class="dropdown-header">
+                                    {{user.email}}
+                                </li>
+                                <li class="divider"></li>
+                                <li class="link" ng-if="user">
+                                    <a href="#/account">
+                                        Account
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li class="link">
+                                    <a ng-click="logout()">
+                                        Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div ng-show="!user" class="login-controls">
+                            <a href="#/login">Login</a>
+                            /
+                            <a href="#/signup">Signup</a>
+                        </div>
+                    </div>
+                    <div class="meta">
+                        <div class="page">
+                            {{title}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Header Bar -->
+
+            <!-- Main Content -->
+            <section data-ui-view></section>
+        </div>
+        <!-- End Page Content -->
+    </div>
+    <!-- End Content Wrapper -->
 </div>
-
-<section data-ui-view></section>
-
+<!-- End Page Wrapper -->
+<!--<div ng-view></div>-->
 </body>
 </html>
