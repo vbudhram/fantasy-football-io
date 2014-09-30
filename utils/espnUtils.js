@@ -128,6 +128,9 @@
                                     var previousPoints = 0;
                                     try {
                                         previousPoints = cell.children[10].children[0].data;
+                                        if(previousPoints === '--'){
+                                            previousPoints = 0;
+                                        }
                                     } catch (e) {
                                     }
 
