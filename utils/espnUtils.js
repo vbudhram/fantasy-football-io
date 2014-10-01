@@ -134,7 +134,14 @@
                                     } catch (e) {
                                     }
 
-                                    var averagePoints = cell.children[9].children[0].data;
+                                    var averagePoints = 0;
+                                    try {
+                                        averagePoints = cell.children[9].children[0].data;
+                                        if(averagePoints === '--'){
+                                            averagePoints = 0;
+                                        }
+                                    } catch (e) {
+                                    }
 
                                     var playerId = cell.children[1].children[0].attribs.playerid;
                                     var playerImage = 'http://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/' + playerId + '.png&w=200&h=145';
