@@ -9,10 +9,12 @@
     var q = require('q');
     var cheerio = require('cheerio');
     var request = require('request');
+    var async = require('async');
     var Team = require('../models/Team');
     var Player = require('../models/Player');
     var LOGIN_URL = 'https://r.espn.go.com/members/util/loginUser';
     var FRONTPAGE_URL = 'http://games.espn.go.com/frontpage/';
+    var PLAYER_STATS_URL = 'http://games.espn.go.com/ffl/tools/projections';
 
     function login(username, password) {
         console.log('Logging into ESPN with username/password = ' + username + '/*****');
@@ -119,7 +121,7 @@
                                     var projectedPoints = 0;
                                     try {
                                         projectedPoints = cell.children[12].children[0].data;
-                                        if(projectedPoints === '--'){
+                                        if (projectedPoints === '--') {
                                             projectedPoints = 0;
                                         }
                                     } catch (e) {
@@ -128,7 +130,7 @@
                                     var previousPoints = 0;
                                     try {
                                         previousPoints = cell.children[10].children[0].data;
-                                        if(previousPoints === '--'){
+                                        if (previousPoints === '--') {
                                             previousPoints = 0;
                                         }
                                     } catch (e) {
@@ -137,7 +139,7 @@
                                     var averagePoints = 0;
                                     try {
                                         averagePoints = cell.children[9].children[0].data;
-                                        if(averagePoints === '--'){
+                                        if (averagePoints === '--') {
                                             averagePoints = 0;
                                         }
                                     } catch (e) {
@@ -378,11 +380,87 @@
         return deferred.promise;
     }
 
+    function getProjectedPlayerStats() {
+        var resultQ = q.defer();
+
+        var defers = [];
+        var request = require('request');
+        var cheerio = require('cheerio');
+
+        var urls = [];
+        for (var i = 0; i < 1000; i = i + 40) {
+            var url = PLAYER_STATS_URL + '?startIndex=' + i;
+            console.log('Getting ESPN player stats for ' + url);
+            urls.push(url);
+        }
+
+        var playerStats = []
+        async.eachSeries(urls, function(url, cb){
+            var statsOptions = {
+                url: url,
+                method: 'GET',
+                followAllRedirects: true
+            };
+
+            request(statsOptions, function (err, res, body) {
+                if (err) {
+                   cb(err);
+                } else {
+                    var $ = cheerio.load(body);
+                    var players = $('.playertablePlayerName');
+
+                    for (var i = 0; i < players.length; i++) {
+                        var player = players[i];
+
+                        var playerStat = {};
+                        playerStat.name = player.children[0].children[0].data;
+
+                        try {
+                            playerStat.position = player.children[0].next.data.replace(',', "").replace('*', "").trim().split(/[^\u000A\u0020-\u007E]/g)[1];
+                            playerStat.team = player.children[0].next.data.replace(',', "").replace('*', "").trim().split(/[^\u000A\u0020-\u007E]/g)[0];
+                            playerStat.opponent = player.next.children[0].children[0].children[0].data.replace('@', '');
+                        } catch (e) {
+                            console.log('Failed parsing : ' + playerStat.name);
+                            playerStat.opponent = '';
+                        }
+                        playerStat.week = (new Date()).toISOString();
+                        playerStat.site = 'espn';
+
+                        try {
+                            var stat = {};
+                            stat.pa_yard = player.next.next.next.next.children[0].data;
+                            stat.pa_ca = player.next.next.next.children[0].data;
+                            stat.pa_td = player.next.next.next.next.next.children[0].data;
+                            stat.pa_int = player.next.next.next.next.next.next.children[0].data;
+                            stat.ru_att = player.next.next.next.next.next.next.next.children[0].data;
+                            stat.ru_td = player.next.next.next.next.next.next.next.next.children[0].data;
+                            stat.ru_yard = player.next.next.next.next.next.next.next.next.next.children[0].data;
+                            stat.re_att = player.next.next.next.next.next.next.next.next.next.next.children[0].data;
+                            stat.re_td = player.next.next.next.next.next.next.next.next.next.next.next.children[0].data;
+                            stat.re_yar = player.next.next.next.next.next.next.next.next.next.next.next.next.children[0].data;
+                            playerStat.stat = [stat];
+                            playerStats.push(playerStat);
+                        } catch (e) {
+                            console.log('Error parsing player stat at index ' + playerStat.name);
+                        }
+                    }
+
+                    cb();
+                }
+            });
+        }, function(err) {
+            resultQ.resolve(playerStats);
+        });
+
+        return resultQ.promise;
+    }
+
     module.exports = {
         login: login,
         getHeadlines: getHeadlines,
         getScoreboards: getScoreboards,
         getScoreboard: getScoreboard,
+        getProjectedPlayerStats: getProjectedPlayerStats,
         getTeams: function (username, password) {
             var resultQ = q.defer();
 

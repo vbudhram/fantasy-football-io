@@ -37,6 +37,31 @@ module.exports = function (connectionUrl) {
         games: [LeagueMatchup]
     });
 
+    // Player Research Models
+    var Stat = new mongoose.Schema({
+        pa_yard: {type: String},
+        pa_ca: {type: String},
+        pa_td: {type: String},
+        pa_int: {type: String},
+        ru_att: {type: String},
+        ru_td: {type: String},
+        ru_yard: {type: String},
+        re_att: {type: String},
+        re_td: {type: String},
+        re_yard: {type: String}
+    });
+
+    var PlayerStat = new mongoose.Schema({
+        name: {type: String},
+        position: {type: String},
+        team: {type: String},
+        opponent: {type: String},
+        image: {type: String},
+        week: {type: String},
+        site: {type: String},
+        stats: [Stat]
+    });
+
     // News Models
     var NewsArticle = new mongoose.Schema({
         title: {type: String},
@@ -97,6 +122,7 @@ module.exports = function (connectionUrl) {
     return {
         User: mongoose.model('Users', User),
         NewsArticle: mongoose.model('NewsArticle', NewsArticle),
-        LeagueScoreboard: mongoose.model('LeagueScoreboard', LeagueScoreboard)
+        LeagueScoreboard: mongoose.model('LeagueScoreboard', LeagueScoreboard),
+        PlayerStat: mongoose.model('Player', PlayerStat)
     };
 };

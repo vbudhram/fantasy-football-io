@@ -51,4 +51,11 @@ describe('ESPN Test', function () {
             });
         });
     });
+
+    it.only('should retrieve player statistics for week', function(done){
+        ESPN.getProjectedPlayerStats().then(function(data){
+            data.length.should.be.greaterThan(100);
+            done();
+        });
+    });
 });
