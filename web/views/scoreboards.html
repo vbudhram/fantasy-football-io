@@ -1,9 +1,12 @@
 <div ng-controller="ScoreboardCtrl" ng-init="getScoreboards('espn','football')">
     <div class="row">
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" ng-model="isFiltered" ng-click="filterMyTeams()"> Only my teams
-            </label>
+        <div class="col-lg-12">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" class="bs-material" ng-model="isFiltered" ng-click="filterMyTeams()"><span
+                        class="check"></span> Only my teams
+                </label>
+            </div>
         </div>
     </div>
     <div class="row" ng-repeat="scoreboard in scoreboards">
@@ -15,10 +18,8 @@
                     <i ng-if="sockets[$index].connected" class="fa fa-circle text-success status"></i>
                     <i ng-if="!sockets[$index].connected" class="fa fa-circle text-danger status"></i>
                 </div>
-
                 <div class="clearfix"></div>
             </div>
-
 
             <div class="widget-body no-padding">
                 <div class="row">
