@@ -118,29 +118,29 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="javascript:void(0)">Fantasy Ally</a>
+            <a class="navbar-brand" href="#">Fantasy Ally</a>
         </div>
 
         <div class="navbar-collapse collapse navbar-responsive-collapse">
             <ul class="nav navbar-nav">
                 <li class="sidebar-list">
-                    <a href="#">News</span></a>
+                    <a href="#"><span class="menu-icon fa fa-newspaper-o"> News</span></a>
                 </li>
-                <li class="sidebar-list">
-                    <a href="#/playerMatrix">Player Matrix</span></a>
+                <li class="sidebar-list" ng-if="user">
+                    <a href="#/playerMatrix"><span class="menu-icon fa fa-user"></span> Players</a>
                 </li>
-                <li class="sidebar-list">
-                    <a href="#/sites">Teams</span></a>
+                <li class="sidebar-list" ng-if="user">
+                    <a href="#/sites"><span class="menu-icon fa fa-user"></span> Teams</span></a>
                 </li>
-                <li class="sidebar-list">
-                    <a href="#/scoreboards">Scoreboards</span></a>
+                <li class="sidebar-list" ng-if="user">
+                    <a href="#/scoreboards"><span class="menu-icon fa fa-soccer-ball-o"></span> Scoreboards</span></a>
                 </li>
             </ul>
-            <ul class="nav navbar-nav navbar-right" ng-show="!user">
+            <ul class="nav navbar-nav navbar-right" ng-if="!user">
                 <li><a href="#/signup">Signup</a></li>
                 <li><a href="#/login">Login</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right" ng-show="user">
+            <ul class="nav navbar-nav navbar-right" ng-if="user">
                 <li class="dropdown">
                     <a href="javascript:void(0)" class="dropdown-toggle avatar" data-toggle="dropdown">
                         <img ng-src="{{user.avatarUrl}}">
